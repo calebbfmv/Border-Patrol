@@ -1,0 +1,6 @@
+name: Border Patrol
+main: com.dpajd.ProtectionPlugin.Main.Main
+version: 0.0.1 Alpha
+authors: LegoPal92, calebbfmv
+Permissions:
+  bp.protect:
