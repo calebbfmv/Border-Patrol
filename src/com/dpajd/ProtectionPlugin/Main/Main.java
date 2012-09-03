@@ -1,9 +1,11 @@
 package com.dpajd.ProtectionPlugin.Main;
 
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +17,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements Listener {
 	public final Logger log = Logger.getLogger("Minecraft");
-	public PluginDescriptionFile pdf;
-	public static final String default_prefix = ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD;
-	public BPConfig settings;
+	PluginDescriptionFile pdf;
+	static final String default_prefix = ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD;
+	HashSet<String> toolEnabled = new HashSet<String>();
+	HashSet<String> bypassEnabled = new HashSet<String>();
+	BPConfig settings;
+	
+	private void toggle(HashSet<String> set,String key){
+		if (set.contains(key)) set.remove(key);
+		else set.add(key);
+	}
 	
 	@Override
 	public void onEnable() {
@@ -31,36 +40,48 @@ public class Main extends JavaPlugin implements Listener {
 		
 		this.getCommand("bp").setExecutor(new CommandExecutor(){
 
+			@SuppressWarnings("unused") // Because I'm OCD and if i see unused 1 more time while this is incomplete...
 			@Override
 			public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-				/*
-				 * see, create, bypass, remove [id], count [player]
-				 * 
-				 * faith <player>, unfaith <player> Thaz it, no more
-				 * 
-				 * */
 				Player player = (sender instanceof Player) ? (Player)sender: null;
 				if (args != null){
 					if (args[0].equalsIgnoreCase("see")){
-						
+						if (player != null){
+							ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
+							if (cr != null){
+								player.sendMessage(default_prefix + "Chunk '"+cr.getChunkX()+cr.getChunkZ()+"' is owned by: " + cr.getOwner());
+								player.sendMessage(ChatColor.GOLD + "Protections: " + cr.getProtections());
+							}else{
+								player.sendMessage(default_prefix + "This chunk is empty.");
+							}
+						}
 					}else if (args[0].equalsIgnoreCase("create")){
-						if (BPPerms.canCreate((Player)sender)){
-							
+						if (player != null){
+							if (BPPerms.canCreate(player)){
+								ChunkRegion.saveRegion(new ChunkRegion(player.getLocation(),player.getName()));
+							}
+						}else return false;
+					}else if (args[0].equalsIgnoreCase("tool")){
+						if (player != null){
+							toggle(toolEnabled,player.getName());
 						}
 					}else if (args[0].equalsIgnoreCase("bypass")){
 						if (player != null){
 							if (BPPerms.isAdmin(player)){
-								
+								toggle(bypassEnabled,player.getName());
 							}
 						}
 					}else if (args[0].equalsIgnoreCase("remove")){
 						if (args.length == 2){
 							// remove chunk by ID
 							String targetID = args[1];
-							
+							ChunkRegion.deleteRegion(targetID);
 						}else if (args.length == 1){
 							// remove chunk player is standing in
-							
+							if (player != null){
+								Chunk ch = player.getLocation().getChunk();
+								ChunkRegion.deleteRegion(player.getWorld().getName() + ch.getX() + ch.getZ());
+							}
 						}
 					}else if (args[0].equalsIgnoreCase("count")){
 						if (args.length == 2){
