@@ -1,6 +1,53 @@
 name: Border Patrol
 main: com.dpajd.ProtectionPlugin.Main.Main
-version: 0.0.1 Alpha
-authors: LegoPal92, calebbfmv
-Permissions:
-  bp.protect:
+version: "0.0.1 Alpha"
+author: calebbfmv
+authors: [skore87, confuserr]
+website: http://dev.bukkit.org/server-mods/border-patrol
+description: Border Patrol is a Lightweight, advanced, grief protection, plugin! Allowing users, with the right Permission, to create protected land, and share it with friends!
+commands:
+    bp:
+        aliases: [borderpatrol]
+        description: 
+        permission: BP.use
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+permissions:
+    BP.use:
+        descrption: Allows use of /BP
+    BP.protect:
+        description: Protect a region
+    BP.see:
+        description: View protections
+    BP.remove.self:
+        description: Remove own protections
+        default: true
+    BP.remove.others:
+        description: Remove other protections
+    BP.protect.limit.X:
+        description: Limit protection count
+    BP.protect.limit.exempt:
+        description: Exempt of limit protection count
+        
+    # User Presets
+    BP.basic:
+        description: Basic user
+        children:
+            BP.use: true
+            BP.protect: true
+            BP.remove.self: true
+            BP.protect.limit.4: true
+    BP.donator:
+        description: Special donator privledges
+        children:
+            BP.protect: true
+            BP.basic: true
+    BP.admin:
+        description: The Bees knees!
+        default: op
+        children:
+            BP.donator: true
+            BP.see: true
+            BP.remove.others: true
+            BP.protect.limit.exempt: true
