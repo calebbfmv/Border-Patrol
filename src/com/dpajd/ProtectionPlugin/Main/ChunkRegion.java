@@ -11,7 +11,7 @@ public class ChunkRegion {
 	
 	private int x, z;
 	private HashSet<String> access = new HashSet<String>();
-	private String owner, world, id;
+	private String owner, world;
 	
 	public ChunkRegion(Location loc, String owner) {
 		this.owner = owner;
@@ -19,7 +19,6 @@ public class ChunkRegion {
 		x = loc.getChunk().getX();
 		z = loc.getChunk().getZ();		
 		world = loc.getWorld().getName();
-		id = "1";
 	}
 	
 	public ChunkRegion(int x, int z, String world, String owner, ArrayList<String> access){
@@ -28,17 +27,10 @@ public class ChunkRegion {
 		this.world = world;
 		this.owner = owner;
 		this.access.addAll(access);
-		id = "1";
-		//Come back to here because you cant spell right.
-	}
-	
-	private static int getNewId(){
-		return 0;
-		//Come back. Get unique Id. Whenever sleepy head comes back.
 	}
 	
 	public String getId(){
-		return id;
+		return "" + x + z;
 	}
 	
 	public boolean hasAccess(String name){
@@ -54,16 +46,15 @@ public class ChunkRegion {
 	}
 	
 	public void removeAccess(String name){
-		if(access.contains(name)){
-			access.remove(name);	
-		}
+		access.remove(name);	
 	}
 	
-	public ChunkRegion loadRegion(String regionName){
+	public static ChunkRegion loadRegion(String id){
+		// TODO: Read region from file
 		return null;
 	}
 	
-	
-	// TODO: Write Chunk Region to a freaking file. Static=easier.
-	// TODO Read it as well. -_- weee.
+	public static void saveRegion(ChunkRegion cr){
+		// TODO: Save region to file
+	}
 }
