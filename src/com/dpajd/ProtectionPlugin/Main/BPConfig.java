@@ -8,6 +8,7 @@ public class BPConfig {
 	
 	public BPConfig(Main plugin){
 		this.plugin = plugin;
+		loadConfig();
 	}
 	
 	private void defaultConfig(){
@@ -17,7 +18,12 @@ public class BPConfig {
 	}
 	
 	public void loadConfig(){
+		defaultConfig();
 		tool = Material.getMaterial(plugin.getConfig().getInt("Item.InHand", 286));
+	}
+	
+	public Material getTool(){
+		return tool;
 	}
 
 }
