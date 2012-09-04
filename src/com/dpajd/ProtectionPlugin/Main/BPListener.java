@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Player;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -36,7 +39,7 @@ public class BPListener implements Listener{
 		ChunkRegion cr;
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 			if (e.getEntity() instanceof Enderman){
-				if (ChunkRegion.getRegionAt(e.getBlock().getLocation()).getProtections().contains(ProtectionType.NO_ENDERMAN_GRIEF)){
+				if (cr.getProtections().contains(ProtectionType.NO_ENDERMAN_GRIEF)){
 					e.setCancelled(true);
 				}
 			}else if (e.getEntity() instanceof Player){
@@ -48,6 +51,35 @@ public class BPListener implements Listener{
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onBlockPhysicsEvent(BlockPhysicsEvent e){
+		ChunkRegion cr;
+		if (e.getBlock().getType() == Material.WATER){
+			if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
+				if (cr.getProtections().contains(ProtectionType.NO_WATER_FLOW)){
+					e.setCancelled(true);
+				}
+			}
+		}else if (e.getBlock().getType() == Material.LAVA){
+			if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
+				if (cr.getProtections().contains(ProtectionType.NO_LAVA_FLOW)){
+					e.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onBlockBurnEvent(BlockBurnEvent e){
+		ChunkRegion cr;
+		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
+			if (cr.getProtections().contains(ProtectionType.NO_FIRE)){
+				e.setCancelled(true);
+			}
+		}
+	}
+	
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent e){
 		ChunkRegion cr;
