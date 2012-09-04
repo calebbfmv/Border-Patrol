@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -28,7 +32,25 @@ public class BPListener implements Listener{
 	}
 	
 	@EventHandler
-	public void onBlockBreakEvent(BlockBreakEvent e){
+	public void onEntityChangeBlockEvent(EntityChangeBlockEvent e){
+		ChunkRegion cr;
+		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
+			if (e.getEntity() instanceof Enderman){
+				if (ChunkRegion.getRegionAt(e.getBlock().getLocation()).getProtections().contains(ProtectionType.NO_ENDERMAN_GRIEF)){
+					e.setCancelled(true);
+				}
+			}else if (e.getEntity() instanceof Player){
+				Player p = (Player)e.getEntity();
+				if (!cr.hasAccess(p.getName())){
+					e.setCancelled(true);
+					e.getBlock().getState().update(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent e){
 		ChunkRegion cr;
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 			if (!cr.hasAccess(e.getPlayer().getName())){
