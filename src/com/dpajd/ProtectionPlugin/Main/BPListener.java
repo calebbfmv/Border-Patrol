@@ -48,6 +48,16 @@ public class BPListener implements Listener{
 			}
 		}
 	}
+	@EventHandler
+	public void onBlockBreakEvent(BlockBreakEvent e){
+		ChunkRegion cr;
+		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
+			if (!cr.hasAccess(e.getPlayer().getName())){
+				e.setCancelled(true);
+				e.getBlock().getState().update(true);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent e){
@@ -55,7 +65,6 @@ public class BPListener implements Listener{
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 			if (!cr.hasAccess(e.getPlayer().getName())){
 				e.setCancelled(true);
-				e.getBlock().getState().update(true);
 			}
 		}
 	}
