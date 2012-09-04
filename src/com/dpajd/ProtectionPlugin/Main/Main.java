@@ -44,7 +44,7 @@ public class Main extends JavaPlugin implements Listener {
 			@Override
 			public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 				Player player = (sender instanceof Player) ? (Player)sender: null;
-				if (args != null){
+				if (args.length > 0){
 					if (args[0].equalsIgnoreCase("see")){
 						if (player != null){
 							ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
@@ -64,6 +64,7 @@ public class Main extends JavaPlugin implements Listener {
 					}else if (args[0].equalsIgnoreCase("tool")){
 						if (player != null){
 							toggle(toolEnabled,player.getName());
+							player.sendMessage(default_prefix + "Toggled tool: " + ((toolEnabled.contains(player.getName()))?"On":"Off"));
 						}
 					}else if (args[0].equalsIgnoreCase("bypass")){
 						if (player != null){
@@ -72,6 +73,7 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					}else if (args[0].equalsIgnoreCase("remove")){
+						ChunkRegion cr;
 						if (args.length == 2){
 							// remove chunk by ID
 							String targetID = args[1];
@@ -80,7 +82,12 @@ public class Main extends JavaPlugin implements Listener {
 							// remove chunk player is standing in
 							if (player != null){
 								Chunk ch = player.getLocation().getChunk();
-								ChunkRegion.deleteRegion(player.getWorld().getName() + ch.getX() + ch.getZ());
+								if ((cr = ChunkRegion.getRegionAt(player.getLocation())) != null){
+									if (cr.getOwner().equals(player.getName()) || BPPerms.isAdmin(player)){
+										player.sendMessage(default_prefix + "Deleted chunk region");
+										ChunkRegion.deleteRegion(player.getWorld().getName() + ch.getX() + ch.getZ());
+									}
+								}
 							}
 						}
 					}else if (args[0].equalsIgnoreCase("count")){
@@ -96,10 +103,27 @@ public class Main extends JavaPlugin implements Listener {
 					}else if (args[0].equalsIgnoreCase("faith")){
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
+							if (target != null){
+								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
+								cr.addAccess(target.getName());
+								player.sendMessage(default_prefix + target.getName() + " added to chunk("+cr.getId()+").");
+								target.sendMessage(default_prefix + "You have been added to chunk("+cr.getId()+")");
+							}else{
+								player.sendMessage(default_prefix + "Player not found.");
+							}
+													
 						}
 					}else if (args[0].equalsIgnoreCase("unfaith")){
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
+							if (target != null){
+								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
+								cr.removeAccess(target.getName());
+								player.sendMessage(default_prefix + target.getName() + " removed from chunk("+cr.getId()+").");
+								target.sendMessage(default_prefix + "You have been removed from chunk("+cr.getId()+")");
+							}else{
+								player.sendMessage(default_prefix + "Player not found.");
+							}
 						}
 					}
 				}else {

@@ -1,6 +1,7 @@
 package com.dpajd.ProtectionPlugin.Main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.bukkit.Bukkit;
@@ -27,17 +28,17 @@ public class ChunkRegion {
 	private int x, z;
 	private HashSet<String> access = new HashSet<String>();
 	private String owner, world;
-	private static File chunkFile = new File("plugins" + File.separator + "BorderPatrol" + File.separator + "protections.yml");
+	private static File chunkFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "protections.yml");
 	private static FileConfiguration chunkYaml = null;
-	@SuppressWarnings("serial")
-	private HashSet<ProtectionType> protections = new HashSet<ProtectionType>(){{add(ProtectionType.NONE);}};
+	private HashSet<ProtectionType> protections;
 	
 	public ChunkRegion(Location loc, String owner) {
 		this.owner = owner;
-		access.add(owner);
 		x = loc.getChunk().getX();
 		z = loc.getChunk().getZ();		
 		world = loc.getWorld().getName();
+		loadProtections();
+		loadMembers();
 	}
 	
 	public ChunkRegion(int x, int z, String world, String owner){
@@ -45,6 +46,8 @@ public class ChunkRegion {
 		this.z = z;
 		this.world = world;
 		this.owner = owner;
+		loadProtections();
+		loadMembers();
 	}
 	
 	public void setOwner(String name){
@@ -60,43 +63,83 @@ public class ChunkRegion {
 	}
 	
 	public boolean hasAccess(String name){
-		return this.owner == name || access.contains(name);
+		//System.out.println("owner:"+ this.owner + ", " + access.toString() + ", returns:"+ (this.owner == name) +","+ (access.contains(name)));
+		return this.owner.equals(name) || access.contains(name);
 	}
 	
 	public ArrayList<ProtectionType> getProtections(){
 		return new ArrayList<ProtectionType>(protections);
 	}
 	
-	public void setProtections(ArrayList<ProtectionType> protections){
+	public void loadProtections(){
+		protections = new HashSet<ProtectionType>();
+		if (chunkYaml == null){
+			chunkYaml = YamlConfiguration.loadConfiguration(chunkFile);
+		}
+		if (chunkYaml.getConfigurationSection(getId()) != null){
+			if (chunkYaml.getStringList(getId() + ".Protections") != null){
+				for (String p : chunkYaml.getStringList(getId() + ".Protections")){
+					protections.add(ProtectionType.getTypeFromName(p));
+				}
+			}
+		}
+	}
+	
+	public void loadMembers(){
+		if (chunkYaml == null){
+			chunkYaml = YamlConfiguration.loadConfiguration(chunkFile);
+		}
+		//System.out.println("loadMembers() -> " + getId() + ".Members");
+		if (chunkYaml.getConfigurationSection(getId()) != null){
+			//System.out.println(chunkYaml.getList(getId() + ".Members"));
+			if (chunkYaml.getStringList(getId() + ".Members") != null){
+				for (String s : chunkYaml.getStringList(getId() + ".Members")){
+					access.add(s.toString());
+				}
+			}
+		}
+	}
+	
+	public void _p(ArrayList<ProtectionType> protections){
 		if (protections == null){
 			this.protections.clear();
 			this.protections.add(ProtectionType.NONE);
 		}else this.protections = new HashSet<ProtectionType>(protections);
 	}
 	
+	public void setProtections(ArrayList<ProtectionType> protections){
+		_p(protections);
+		saveRegion(this);
+	}
+	
 	public void addProtections(ArrayList<ProtectionType> protections){
 		this.protections.addAll(protections);
 		if (this.protections.contains(ProtectionType.NONE)) this.protections.remove(ProtectionType.NONE);
+		saveRegion(this);
 	}
 	
 	public void addProtection(ProtectionType p){
 		protections.add(p);
 		if (this.protections.contains(ProtectionType.NONE)) this.protections.remove(ProtectionType.NONE);
+		saveRegion(this);
 	}
 	
 	public void removeAllProtections(){
 		protections.clear();
 		protections.add(ProtectionType.NONE);
+		saveRegion(this);
 	}
 	
 	public void removeProtections(ArrayList<ProtectionType> protections){
 		this.protections.removeAll(protections);
 		if (!this.protections.contains(ProtectionType.NONE)) this.protections.add(ProtectionType.NONE);
+		saveRegion(this);
 	}
 	
 	public void removeProtection(ProtectionType p){
 		protections.remove(p);
 		if (!this.protections.contains(ProtectionType.NONE)) this.protections.add(ProtectionType.NONE);
+		saveRegion(this);
 	}
 	
 	// XXX: isInside(Block) unused...
@@ -106,18 +149,27 @@ public class ChunkRegion {
 	
 	public void addAccess(String name){
 		access.add(name);
+		System.out.println("Adding:"+name);
+		saveRegion(this);
+		System.out.println("the name:" + ((access.contains(name))?"exists":"doesn't exist"));
 	}
 	
 	public void removeAccess(String name){
-		if (name != this.owner) access.remove(name);	
+		access.remove(name);
+		saveRegion(this);
 	}
 	
 	public HashSet<String> getAccess(){
 		return access;
 	}
 	
-	public void setAccess(HashSet<String> access){
+	public void _m(HashSet<String> access){
 		this.access = access;
+	}
+	
+	public void setAccess(HashSet<String> access){
+		_m(access);
+		saveRegion(this);
 	}
 	
 	public int getChunkX(){
@@ -164,32 +216,39 @@ public class ChunkRegion {
 			chunkYaml = YamlConfiguration.loadConfiguration(chunkFile);
 		}
 		if (chunkYaml.getKeys(false).contains(id)){
+			System.out.println("LOADING REGION " + id);
 			String owner;
 			String world;
 			int x, z;
-			HashSet<String> members = new HashSet<String>();
-			HashSet<ProtectionType> protections = new HashSet<ProtectionType>();
+			/*HashSet<String> members = new HashSet<String>();
+			HashSet<ProtectionType> protections = new HashSet<ProtectionType>();*/
 			
 			owner = chunkYaml.getString(id + ".Owner");
 			world = chunkYaml.getString(id + ".World");
 			x = chunkYaml.getInt(id + ".Location.X");
 			z = chunkYaml.getInt(id + ".Location.Z");
 			
-			if (chunkYaml.getConfigurationSection(id + ".Members") != null){
-				/*for (String member : chunkYaml.getConfigurationSection(id + ".Members").getKeys(false)){
+			/*if (chunkYaml.getConfigurationSection(id + ".Members") != null){
+				System.out.println(chunkYaml.getStringList(id + ".Members"));
+				for (String member : chunkYaml.getStringList(id + ".Members")){
 					members.add(member);
-				}*/
-				members.addAll(chunkYaml.getStringList(id + ".Members"));
+				}
+				System.out.println(members);
 			}
 			if (chunkYaml.getConfigurationSection(id + ".Protections") != null){
-				for (String p : chunkYaml.getConfigurationSection(id + ".Protections").getKeys(false)){
+				System.out.println(chunkYaml.getStringList(id + ".Protections"));
+				for (String p : chunkYaml.getStringList(id + ".Protections")){
 					protections.add(ProtectionType.getTypeFromName(p));
 				}
-			}
+				System.out.println(protections);
+			}*/
 			
 			ChunkRegion cr = new ChunkRegion(x,z,world,owner);
-			cr.setProtections(new ArrayList<ProtectionType>(protections));
-			cr.setAccess(members);
+			cr.loadMembers();
+			cr.loadProtections();
+			/*cr._p(new ArrayList<ProtectionType>(protections));
+			cr._m(members);*/
+			System.out.println("--END LOADING");
 			return cr;
 		}
 		return null;
@@ -208,11 +267,29 @@ public class ChunkRegion {
 		ArrayList<String> protections = new ArrayList<String>();
 		for (ProtectionType p : cr.getProtections())
 			protections.add(p.name());
-		chunkYaml.set(cr.getId() + ".Protections", protections);
+		if (protections.size() == 0){
+			protections.add(ProtectionType.NONE.toString());
+		}
+		chunkYaml.set(cr.getId() + ".Protections", protections.toArray(new String[protections.size()]));
+		chunkYaml.set(cr.getId() + ".Members", cr.getAccess().toArray(new String[cr.getAccess().size()]));
+		System.out.println(" ");
+		System.out.println("protections: "+ protections);
+		System.out.println("members: " + cr.getAccess());
+		try {
+			chunkYaml.save(chunkFile);
+			System.out.println("-- SAVE");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void deleteRegion(String id){
 		// TODO: Delete a region
 		chunkYaml.set(id, null);
+		try {
+			chunkYaml.save(chunkFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

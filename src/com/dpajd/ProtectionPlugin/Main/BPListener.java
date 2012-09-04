@@ -104,29 +104,45 @@ public class BPListener implements Listener{
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent e){
 		if (plugin.toolEnabled.contains(e.getPlayer().getName())){
-			@SuppressWarnings("unused") // Only used if chunkregion is null
-			ChunkRegion cr;
-			Location click = e.getClickedBlock().getLocation();
-			String playerName = e.getPlayer().getName();
-			if ((cr = ChunkRegion.getRegionAt(e.getPlayer().getLocation())).equals(null) && BPPerms.canCreate(e.getPlayer())){
-				if (e.getAction() == Action.LEFT_CLICK_BLOCK){
-					if (e.getItem().getType() == settings.getTool()){
-						toolUse.put(playerName, click);
-					}
-				}else if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-					if (e.getItem().getType() == settings.getTool()){
-						if (toolUse.containsKey(playerName)){
-							ChunkRegion.saveRegion(new ChunkRegion(click,playerName));
-							toolUse.remove(playerName);
-						}else{
-							e.getPlayer().sendMessage(Main.default_prefix + "You must left click the block before you can confirm.");
+			if (plugin.toolEnabled.contains(e.getPlayer().getName())){
+				@SuppressWarnings("unused")
+				ChunkRegion cr;
+				if (e.getClickedBlock() != null){
+					//System.out.println("Clicked isn't null");
+					Location click = e.getClickedBlock().getLocation(); 
+					String playerName = e.getPlayer().getName();
+					if ((cr = ChunkRegion.getRegionAt(e.getPlayer().getLocation())) == null){
+						//System.out.println("ChunkRegion is empty.");
+						if (BPPerms.canCreate(e.getPlayer())){
+							if (e.getAction() == Action.LEFT_CLICK_BLOCK){
+								//System.out.println("Left Clicked");
+								if (e.getItem().getType() == settings.getTool()){
+									toolUse.put(playerName, click);
+									//System.out.println("added to toolUse");
+									e.getPlayer().sendMessage(Main.default_prefix + "Creating region protection. Right click to confirm.");
+								}
+							}else if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+								if (e.getItem() != null){
+									if (e.getItem().getType() == settings.getTool()){
+										System.out.println("Right Clicked");
+										if (toolUse.containsKey(playerName)){
+											ChunkRegion newChunk = new ChunkRegion(click,playerName);
+											ChunkRegion.saveRegion(newChunk);
+											e.getPlayer().sendMessage(Main.default_prefix + "You created a chunk protection '" + newChunk.getId()+"'");
+											
+											toolUse.remove(playerName);
+											//System.out.println("Removed from toolUse && saved region");
+										}else{
+											e.getPlayer().sendMessage(Main.default_prefix + "You must left click the block before you can confirm.");
+										}
+									}
+								}
+							}
 						}
 					}
 				}
-				
 			}
 		}
-
 	}
 	
 	@EventHandler
