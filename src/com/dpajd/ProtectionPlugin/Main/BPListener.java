@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -21,6 +22,9 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import com.dpajd.ProtectionPlugin.Main.ChunkRegion.ProtectionType;
 
@@ -51,11 +55,37 @@ public class BPListener implements Listener{
 			}
 		}
 	}
-	
+    private boolean isLava(Block block){
+        return block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA;
+    }
+
+    private boolean isWater(Block block){
+        return block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER;
+    }
+    
+    @EventHandler
+    public void onBlockFromToEvent(BlockFromToEvent e){
+    	if (isLava(e.getBlock()) || isWater(e.getBlock())){
+    		ChunkRegion cr;
+    		if ((cr = ChunkRegion.getRegionAt(e.getToBlock().getLocation())) != null){
+    			if (cr.getProtections().contains(ProtectionType.NO_WATER_FLOW)){
+    				if (isWater(e.getBlock())){
+    					e.setCancelled(true);
+    				}
+    			}else if (cr.getProtections().contains(ProtectionType.NO_LAVA_FLOW)){
+    				if (isLava(e.getBlock())){
+    					e.setCancelled(true);
+    				}
+    			}
+    		}
+    	}
+    }
+    
 	@EventHandler
 	public void onBlockPhysicsEvent(BlockPhysicsEvent e){
 		ChunkRegion cr;
 		if (e.getBlock().getType() == Material.WATER){
+			
 			if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 				if (cr.getProtections().contains(ProtectionType.NO_WATER_FLOW)){
 					e.setCancelled(true);
@@ -79,7 +109,7 @@ public class BPListener implements Listener{
 			}
 		}
 	}
-	
+		
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent e){
 		ChunkRegion cr;
@@ -87,6 +117,10 @@ public class BPListener implements Listener{
 			if (!cr.hasAccess(e.getPlayer().getName())){
 				e.setCancelled(true);
 				e.getBlock().getState().update(true);
+			}
+		}else {
+			if (plugin.toolEnabled.contains(e.getPlayer().getName()) && e.getPlayer().getItemInHand().getType().equals(settings.getTool())){
+				e.setCancelled(true);
 			}
 		}
 	}
@@ -96,6 +130,10 @@ public class BPListener implements Listener{
 		ChunkRegion cr;
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 			if (!cr.hasAccess(e.getPlayer().getName())){
+				e.setCancelled(true);
+			}
+		}else {
+			if (plugin.toolEnabled.contains(e.getPlayer().getName()) && e.getPlayer().getItemInHand().getType().equals(settings.getTool())){
 				e.setCancelled(true);
 			}
 		}
@@ -169,13 +207,15 @@ public class BPListener implements Listener{
 			ArrayList<String> chunkList = new ArrayList<String>(chunks);
 			ChunkRegion from = ChunkRegion.loadRegion(chunkList.get(0));
 			ChunkRegion to = ChunkRegion.loadRegion(chunkList.get(1));
-			if (to.getProtections().contains(ProtectionType.NO_PISTON_GRIEF)){
-				if (to != null && from != null){
-					if (!from.getOwner().equals(to.getOwner())){
+			if (from.getProtections().contains(ProtectionType.NO_PISTON_GRIEF)){ // NPE
+				if (from != null && to != null){
+					if (!to.getOwner().equals(from.getOwner())){
 						e.setCancelled(true);
 					}
-				}else if(to != null && from == null){
-					e.setCancelled(true);
+				}else if(from != null && to == null){
+					if (!from.isInside(e.getBlock())){
+						e.setCancelled(true);
+					}
 				}
 			}
 
@@ -208,9 +248,24 @@ public class BPListener implements Listener{
 				ChunkRegion to = ChunkRegion.getRegionAt(e.getTo());
 				if (to.getProtections().contains(ProtectionType.NO_ENTRY)){
 					if (to != from){
-						if (!to.getAccess().contains(e.getPlayer().getName())){
+						if (!to.hasAccess(e.getPlayer().getName())){
 							e.getPlayer().sendMessage(Main.default_prefix + "You are not permitted to enter this area!");
 							e.getPlayer().teleport(e.getFrom());
+						}
+					}
+				}
+				if (to.getProtections().contains(ProtectionType.ELECTRIC_FENCE)){
+					if (to != from){
+						if (!to.hasAccess(e.getPlayer().getName())){
+							e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 15, 5));
+							e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 15, 1));
+							e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 1));
+							e.getPlayer().getWorld().strikeLightningEffect(e.getPlayer().getLocation());
+							e.getPlayer().setHealth((int) Math.floor(e.getPlayer().getHealth()/2));
+							e.getPlayer().teleport(e.getFrom());
+							Vector v = e.getPlayer().getLocation().getDirection();
+							v.multiply(-1).add(new Vector(0,0.2,0));
+							e.getPlayer().setVelocity(v);
 						}
 					}
 				}

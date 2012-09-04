@@ -33,15 +33,14 @@ public class ChunkRegion {
 	private HashSet<ProtectionType> protections;
 	
 	public ChunkRegion(Location loc, String owner) {
-		this.owner = owner;
-		x = loc.getChunk().getX();
-		z = loc.getChunk().getZ();		
-		world = loc.getWorld().getName();
-		loadProtections();
-		loadMembers();
+		_init(loc.getChunk().getX(),loc.getChunk().getZ(),loc.getWorld().getName(),owner);
 	}
 	
 	public ChunkRegion(int x, int z, String world, String owner){
+		_init(x,z,world,owner);
+	}
+	
+	private void _init(int x, int z, String world, String owner){
 		this.x = x;
 		this.z = z;
 		this.world = world;
@@ -62,8 +61,11 @@ public class ChunkRegion {
 		return world + x + z;
 	}
 	
+	public String getIdAlt(){
+		return "" + x + z;
+	}
+	
 	public boolean hasAccess(String name){
-		//System.out.println("owner:"+ this.owner + ", " + access.toString() + ", returns:"+ (this.owner == name) +","+ (access.contains(name)));
 		return this.owner.equals(name) || access.contains(name);
 	}
 	
@@ -83,15 +85,18 @@ public class ChunkRegion {
 				}
 			}
 		}
+		/*// Testing only, add all protections to a region
+		ProtectionType[] parry = {ProtectionType.ELECTRIC_FENCE,ProtectionType.NO_ENDERMAN_GRIEF,ProtectionType.NO_ENTRY,ProtectionType.NO_EXPLOSION,ProtectionType.NO_FIRE,ProtectionType.NO_LAVA_FLOW,ProtectionType.NO_PISTON_GRIEF,ProtectionType.NO_WATER_FLOW};
+		for (ProtectionType p : parry){
+			protections.add(p);
+		}*/
 	}
 	
 	public void loadMembers(){
 		if (chunkYaml == null){
 			chunkYaml = YamlConfiguration.loadConfiguration(chunkFile);
 		}
-		//System.out.println("loadMembers() -> " + getId() + ".Members");
 		if (chunkYaml.getConfigurationSection(getId()) != null){
-			//System.out.println(chunkYaml.getList(getId() + ".Members"));
 			if (chunkYaml.getStringList(getId() + ".Members") != null){
 				for (String s : chunkYaml.getStringList(getId() + ".Members")){
 					access.add(s.toString());
@@ -142,16 +147,13 @@ public class ChunkRegion {
 		saveRegion(this);
 	}
 	
-	// XXX: isInside(Block) unused...
 	public boolean isInside(Block b){ 
 		return Bukkit.getWorld(world).getChunkAt(x,z).equals(b.getChunk());
 	}
 	
 	public void addAccess(String name){
 		access.add(name);
-		System.out.println("Adding:"+name);
 		saveRegion(this);
-		System.out.println("the name:" + ((access.contains(name))?"exists":"doesn't exist"));
 	}
 	
 	public void removeAccess(String name){
@@ -185,18 +187,17 @@ public class ChunkRegion {
 	}
 	
 	public static void generateFence(ChunkRegion cr){
-		int x1 = cr.getChunkX() * 16, x2 = x1 + 16, z1 = cr.getChunkZ() * 16, z2 = z1 + 16;
+		int x1 = cr.getChunkX() * 16, x2 = x1 + 15, z1 = cr.getChunkZ() * 16, z2 = z1 + 15;
 		World world = cr.getWorld();
-		// top-left (x1,z1)
-		// bottom-r (x2,z2)
-		for (int x = x1; x < x2; x ++){
-			world.getBlockAt(x, world.getHighestBlockYAt(x, z1)+1, z1).setType(Material.FENCE);
-			world.getBlockAt(x, world.getHighestBlockYAt(x, z2)+1, z2).setType(Material.FENCE);
+		for (int x = x1; x <= x2; x ++){
+			world.getBlockAt(x, world.getHighestBlockYAt(x, z1), z1).setType(Material.FENCE);
+			world.getBlockAt(x, world.getHighestBlockYAt(x, z2), z2).setType(Material.FENCE);
 		}
-		for (int z = z1 -1; z < z2 +1; z ++){ // Verify in-game
-			world.getBlockAt(x1, world.getHighestBlockYAt(x1, z)+1, z).setType(Material.FENCE);
-			world.getBlockAt(x2, world.getHighestBlockYAt(x2, z)+1, z).setType(Material.FENCE);
+		for (int z = z1 ; z <= z2 ; z ++){
+			world.getBlockAt(x1, world.getHighestBlockYAt(x1, z), z).setType(Material.FENCE);
+			world.getBlockAt(x2, world.getHighestBlockYAt(x2, z), z).setType(Material.FENCE);
 		}
+		world.getBlockAt(x1, world.getHighestBlockYAt(x1, z1+7), z1 + 8).setTypeIdAndData(Material.FENCE_GATE.getId(), (byte) 1, true);
 	}
 	
 	public static boolean isChunkProtected(Chunk ch){
@@ -220,38 +221,24 @@ public class ChunkRegion {
 			String owner;
 			String world;
 			int x, z;
-			/*HashSet<String> members = new HashSet<String>();
-			HashSet<ProtectionType> protections = new HashSet<ProtectionType>();*/
 			
 			owner = chunkYaml.getString(id + ".Owner");
 			world = chunkYaml.getString(id + ".World");
 			x = chunkYaml.getInt(id + ".Location.X");
 			z = chunkYaml.getInt(id + ".Location.Z");
 			
-			/*if (chunkYaml.getConfigurationSection(id + ".Members") != null){
-				System.out.println(chunkYaml.getStringList(id + ".Members"));
-				for (String member : chunkYaml.getStringList(id + ".Members")){
-					members.add(member);
-				}
-				System.out.println(members);
-			}
-			if (chunkYaml.getConfigurationSection(id + ".Protections") != null){
-				System.out.println(chunkYaml.getStringList(id + ".Protections"));
-				for (String p : chunkYaml.getStringList(id + ".Protections")){
-					protections.add(ProtectionType.getTypeFromName(p));
-				}
-				System.out.println(protections);
-			}*/
-			
 			ChunkRegion cr = new ChunkRegion(x,z,world,owner);
 			cr.loadMembers();
 			cr.loadProtections();
-			/*cr._p(new ArrayList<ProtectionType>(protections));
-			cr._m(members);*/
 			System.out.println("--END LOADING");
 			return cr;
 		}
 		return null;
+	}
+	
+	public static int playerRegionCount(String player){
+		// TODO: Count all regions owned by given player
+		return 0;
 	}
 	
 	public static void saveRegion(ChunkRegion cr){
@@ -284,7 +271,6 @@ public class ChunkRegion {
 	}
 	
 	public static void deleteRegion(String id){
-		// TODO: Delete a region
 		chunkYaml.set(id, null);
 		try {
 			chunkYaml.save(chunkFile);

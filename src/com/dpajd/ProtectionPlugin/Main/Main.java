@@ -3,6 +3,7 @@ package com.dpajd.ProtectionPlugin.Main;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -43,6 +44,7 @@ public class Main extends JavaPlugin implements Listener {
 			@SuppressWarnings("unused") // Because I'm OCD and if i see unused 1 more time while this is incomplete...
 			@Override
 			public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+				String argsString = StringUtils.join(args, " ").toLowerCase();
 				Player player = (sender instanceof Player) ? (Player)sender: null;
 				if (args.length > 0){
 					if (args[0].equalsIgnoreCase("see")){
@@ -50,15 +52,25 @@ public class Main extends JavaPlugin implements Listener {
 							ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
 							if (cr != null){
 								player.sendMessage(default_prefix + "Chunk '"+cr.getChunkX()+cr.getChunkZ()+"' is owned by: " + cr.getOwner());
-								player.sendMessage(ChatColor.GOLD + "Protections: " + cr.getProtections());
+								player.sendMessage(ChatColor.GOLD + "Protections: " + ChatColor.GRAY + cr.getProtections());
+								player.sendMessage(ChatColor.GOLD + "Members: " + ChatColor.GRAY + cr.getAccess());
 							}else{
 								player.sendMessage(default_prefix + "This chunk is empty.");
 							}
 						}
+					}else if(args[0].equalsIgnoreCase("help")){
+						// TODO: List all commands.
 					}else if (args[0].equalsIgnoreCase("create")){
+						// TODO: Create method to parse args for flags
+						// TODO: Add protections to region from flags
+						// XXX: Add members to region from flag
 						if (player != null){
 							if (BPPerms.canCreate(player)){
-								ChunkRegion.saveRegion(new ChunkRegion(player.getLocation(),player.getName()));
+								ChunkRegion cr = new ChunkRegion(player.getLocation(),player.getName());
+								if (argsString.contains("-f")){
+									ChunkRegion.generateFence(cr);
+								}
+								ChunkRegion.saveRegion(cr);
 							}
 						}else return false;
 					}else if (args[0].equalsIgnoreCase("tool")){
@@ -73,6 +85,7 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					}else if (args[0].equalsIgnoreCase("remove")){
+						// XXX: Remove generated fence?
 						ChunkRegion cr;
 						if (args.length == 2){
 							// remove chunk by ID
@@ -92,35 +105,38 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}else if (args[0].equalsIgnoreCase("count")){
 						if (args.length == 2){
-							// count the amount of protections given player has
+							// TODO: Count total regions given player has
 							Player target = Bukkit.getPlayer(args[1]);
 						}else if (args.length == 1){
 							Player target = sender instanceof Player? (Player)sender : null;
 							if (target != null){
-								// count the amount of protections sender has
+								// TODO: Count total regions sending player has
 							}else return false;
 						}
 					}else if (args[0].equalsIgnoreCase("faith")){
+						// FIXME: Update region so change is made. Currently requires /reload.
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){
 								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
 								cr.addAccess(target.getName());
-								player.sendMessage(default_prefix + target.getName() + " added to chunk("+cr.getId()+").");
-								target.sendMessage(default_prefix + "You have been added to chunk("+cr.getId()+")");
+								ChunkRegion.saveRegion(cr);
+								player.sendMessage(default_prefix + target.getName() + " added to chunk("+cr.getIdAlt()+").");
+								target.sendMessage(default_prefix + "You have been added to chunk("+cr.getIdAlt()+") by " + player.getName());
 							}else{
 								player.sendMessage(default_prefix + "Player not found.");
 							}
 													
 						}
 					}else if (args[0].equalsIgnoreCase("unfaith")){
+						// FIXME: Update region so change is made. Currently requires /reload.
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){
 								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
 								cr.removeAccess(target.getName());
-								player.sendMessage(default_prefix + target.getName() + " removed from chunk("+cr.getId()+").");
-								target.sendMessage(default_prefix + "You have been removed from chunk("+cr.getId()+")");
+								player.sendMessage(default_prefix + target.getName() + " removed from chunk("+cr.getIdAlt()+").");
+								target.sendMessage(default_prefix + "You have been removed from chunk("+cr.getIdAlt()+")");
 							}else{
 								player.sendMessage(default_prefix + "Player not found.");
 							}

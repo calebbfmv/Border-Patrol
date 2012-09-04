@@ -4,6 +4,10 @@ import org.bukkit.entity.Player;
 
 public class BPPerms {
 	public static boolean canCreate(Player p){
+		ChunkRegion cr = ChunkRegion.getRegionAt(p.getLocation());
+		if (cr != null){
+			return false;
+		}
 		return (p.hasPermission("BP.protect"));
 	}
 	public static boolean canRemove(Player p){
