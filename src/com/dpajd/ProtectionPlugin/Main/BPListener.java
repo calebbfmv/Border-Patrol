@@ -28,6 +28,8 @@ import org.bukkit.util.Vector;
 
 import com.dpajd.ProtectionPlugin.Main.ChunkRegion.ProtectionType;
 
+@SuppressWarnings("unused")
+@Deprecated
 public class BPListener implements Listener{
 	private BPConfig settings;
 	private Main plugin;
@@ -43,7 +45,7 @@ public class BPListener implements Listener{
 		ChunkRegion cr;
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
 			if (e.getEntity() instanceof Enderman){
-				if (cr.getProtections().contains(ProtectionType.NO_ENDERMAN_GRIEF)){
+				if (cr.hasProtection(ProtectionType.NO_ENDERMAN_GRIEF)){
 					e.setCancelled(true);
 				}
 			}else if (e.getEntity() instanceof Player){
@@ -68,7 +70,7 @@ public class BPListener implements Listener{
     	if (isLava(e.getBlock()) || isWater(e.getBlock())){
     		ChunkRegion cr;
     		if ((cr = ChunkRegion.getRegionAt(e.getToBlock().getLocation())) != null){
-    			if (cr.getProtections().contains(ProtectionType.NO_WATER_FLOW)){
+    			if (cr.hasProtection(ProtectionType.NO_WATER_FLOW)){
     				if (isWater(e.getBlock())){
     					e.setCancelled(true);
     				}
@@ -87,13 +89,13 @@ public class BPListener implements Listener{
 		if (e.getBlock().getType() == Material.WATER){
 			
 			if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
-				if (cr.getProtections().contains(ProtectionType.NO_WATER_FLOW)){
+				if (cr.hasProtection(ProtectionType.NO_WATER_FLOW)){
 					e.setCancelled(true);
 				}
 			}
 		}else if (e.getBlock().getType() == Material.LAVA){
 			if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
-				if (cr.getProtections().contains(ProtectionType.NO_LAVA_FLOW)){
+				if (cr.hasProtection(ProtectionType.NO_LAVA_FLOW)){
 					e.setCancelled(true);
 				}
 			}
@@ -104,7 +106,7 @@ public class BPListener implements Listener{
 	public void onBlockBurnEvent(BlockBurnEvent e){
 		ChunkRegion cr;
 		if ((cr = ChunkRegion.getRegionAt(e.getBlock().getLocation())) != null){
-			if (cr.getProtections().contains(ProtectionType.NO_FIRE)){
+			if (cr.hasProtection(ProtectionType.NO_FIRE)){
 				e.setCancelled(true);
 			}
 		}
@@ -143,33 +145,27 @@ public class BPListener implements Listener{
 	public void onPlayerInteractEvent(PlayerInteractEvent e){
 		if (plugin.toolEnabled.contains(e.getPlayer().getName())){
 			if (plugin.toolEnabled.contains(e.getPlayer().getName())){
-				@SuppressWarnings("unused")
 				ChunkRegion cr;
 				if (e.getClickedBlock() != null){
-					//System.out.println("Clicked isn't null");
 					Location click = e.getClickedBlock().getLocation(); 
 					String playerName = e.getPlayer().getName();
 					if ((cr = ChunkRegion.getRegionAt(e.getPlayer().getLocation())) == null){
-						//System.out.println("ChunkRegion is empty.");
 						if (BPPerms.canCreate(e.getPlayer())){
 							if (e.getAction() == Action.LEFT_CLICK_BLOCK){
-								//System.out.println("Left Clicked");
 								if (e.getItem().getType() == settings.getTool()){
 									toolUse.put(playerName, click);
-									//System.out.println("added to toolUse");
-									e.getPlayer().sendMessage(Main.default_prefix + "Creating region protection. Right click to confirm.");
+									e.getPlayer().sendMessage(Main.default_prefix + "Creating region protection. Right click the same block to confirm.");
 								}
 							}else if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
 								if (e.getItem() != null){
 									if (e.getItem().getType() == settings.getTool()){
-										System.out.println("Right Clicked");
 										if (toolUse.containsKey(playerName)){
-											ChunkRegion newChunk = new ChunkRegion(click,playerName);
-											ChunkRegion.saveRegion(newChunk);
-											e.getPlayer().sendMessage(Main.default_prefix + "You created a chunk protection '" + newChunk.getId()+"'");
-											
-											toolUse.remove(playerName);
-											//System.out.println("Removed from toolUse && saved region");
+											if (toolUse.get(playerName).getBlock().equals(e.getClickedBlock())){
+												ChunkRegion newChunk = new ChunkRegion(click,playerName);
+												ChunkRegion.saveRegion(newChunk);
+												e.getPlayer().sendMessage(Main.default_prefix + "You created a chunk protection '" + newChunk.getId()+"'");
+												toolUse.remove(playerName);
+											}
 										}else{
 											e.getPlayer().sendMessage(Main.default_prefix + "You must left click the block before you can confirm.");
 										}
@@ -177,6 +173,9 @@ public class BPListener implements Listener{
 								}
 							}
 						}
+					}else{
+						e.getPlayer().sendMessage(Main.default_prefix + "You cannot claim this chunk!");
+						toolUse.remove(playerName);
 					}
 				}
 			}
@@ -187,7 +186,7 @@ public class BPListener implements Listener{
 	public void onEntityExplodeEvent(EntityExplodeEvent e){
 		for (Block b : e.blockList()){
 			if (ChunkRegion.isChunkProtected(b.getChunk())){
-				if (ChunkRegion.getRegionAt(b.getLocation()).getProtections().contains(ProtectionType.NO_EXPLOSION)){
+				if (ChunkRegion.getRegionAt(b.getLocation()).hasProtection(ProtectionType.NO_EXPLOSION)){
 					e.blockList().clear(); // Remove blocks from damage, allow entity damage.
 					//e.setCancelled(true);
 					break;
@@ -207,7 +206,7 @@ public class BPListener implements Listener{
 			ArrayList<String> chunkList = new ArrayList<String>(chunks);
 			ChunkRegion from = ChunkRegion.loadRegion(chunkList.get(0));
 			ChunkRegion to = ChunkRegion.loadRegion(chunkList.get(1));
-			if (from.getProtections().contains(ProtectionType.NO_PISTON_GRIEF)){ // NPE
+			if (from.hasProtection(ProtectionType.NO_PISTON_GRIEF)){ // NPE
 				if (from != null && to != null){
 					if (!to.getOwner().equals(from.getOwner())){
 						e.setCancelled(true);
@@ -227,7 +226,7 @@ public class BPListener implements Listener{
 		if (e.isSticky()){
 			ChunkRegion to = ChunkRegion.getRegionAt(e.getRetractLocation());
 			ChunkRegion from = ChunkRegion.getRegionAt(e.getBlock().getLocation());
-			if (to.getProtections().contains(ProtectionType.NO_PISTON_GRIEF)){
+			if (to.hasProtection(ProtectionType.NO_PISTON_GRIEF)){
 				if (to != null && from != null){
 					if (!from.getOwner().equals(to.getOwner())){
 						e.setCancelled(true);
@@ -246,7 +245,7 @@ public class BPListener implements Listener{
 			if (ChunkRegion.isChunkProtected(e.getTo().getChunk())){
 				ChunkRegion from = ChunkRegion.getRegionAt(e.getFrom());
 				ChunkRegion to = ChunkRegion.getRegionAt(e.getTo());
-				if (to.getProtections().contains(ProtectionType.NO_ENTRY)){
+				if (to.hasProtection(ProtectionType.NO_ENTRY)){
 					if (to != from){
 						if (!to.hasAccess(e.getPlayer().getName())){
 							e.getPlayer().sendMessage(Main.default_prefix + "You are not permitted to enter this area!");
@@ -254,7 +253,7 @@ public class BPListener implements Listener{
 						}
 					}
 				}
-				if (to.getProtections().contains(ProtectionType.ELECTRIC_FENCE)){
+				if (to.hasProtection(ProtectionType.ELECTRIC_FENCE)){
 					if (to != from){
 						if (!to.hasAccess(e.getPlayer().getName())){
 							e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 15, 5));

@@ -1,12 +1,14 @@
 package com.dpajd.ProtectionPlugin.Main;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +17,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.dpajd.ProtectionPlugin.Protections.*;
+import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
+import com.dpajd.ProtectionPlugin.Regions.Member;
+import com.dpajd.ProtectionPlugin.Regions.Owner;
+import com.dpajd.ProtectionPlugin.Regions.Region;
 
 public class Main extends JavaPlugin implements Listener {
 	public final Logger log = Logger.getLogger("Minecraft");
@@ -22,11 +29,70 @@ public class Main extends JavaPlugin implements Listener {
 	static final String default_prefix = ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD;
 	HashSet<String> toolEnabled = new HashSet<String>();
 	HashSet<String> bypassEnabled = new HashSet<String>();
-	BPConfig settings;
+	HashMap<String,Location> toolUse = new HashMap<String,Location>();
+	BPConfig settings = null;
+	private ArrayList<Region> regions = new ArrayList<Region>();
+	public enum MsgType{
+		NORMAL(ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD),
+		DENIED(ChatColor.RED + "[BorderPatrol] " + ChatColor.RED),
+		ERROR(ChatColor.RED + "[BorderPatrol] " + ChatColor.BOLD);
+		
+		private String prefix;
+		@SuppressWarnings("serial")
+		private static HashMap<MsgType,ChatColor> color = new HashMap<MsgType,ChatColor>(){{
+			put(NORMAL, ChatColor.GOLD);
+			put(DENIED, ChatColor.RED);
+			put(ERROR, ChatColor.BOLD);
+		}};
+		
+		MsgType(String prefix){
+			this.prefix = prefix;
+		}
+		
+		@Override
+		public String toString(){
+			return this.prefix;
+		}
+		
+		public ChatColor getColor(){
+			return color.get(this);
+		}
+		
+	}
 	
+	public boolean isProtected(Chunk chunk){
+		for (Region r : regions){
+			if ( r.getChunks().contains(chunk) ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	public Region getRegion(Chunk chunk){
+		for (Region r : regions){
+			if ( r.getChunks().contains(chunk)) return r;
+		}
+		return null;
+	}
+	
+	public void addRegion(Region region){
+		regions.add(region);
+	}
+	
+	public final ArrayList<Region> getRegions(){
+		return regions;
+	}
+
 	private void toggle(HashSet<String> set,String key){
 		if (set.contains(key)) set.remove(key);
 		else set.add(key);
+	}
+	
+	public void deleteRegion(Region region){
+		regions.remove(region);
+		region.deleteRegion();
 	}
 	
 	@Override
@@ -37,11 +103,23 @@ public class Main extends JavaPlugin implements Listener {
 		PluginManager pm = getServer().getPluginManager();
 		settings = new BPConfig(this);
 		
-		pm.registerEvents(new BPListener(this), this);
+		//pm.registerEvents(new BPListener(this), this);
+		
+		regions = Region.loadRegions();
+		
+		// future events
+		pm.registerEvents(new ElectricFence		(this), this);
+		pm.registerEvents(new NoBuild			(this), this);
+		pm.registerEvents(new NoEndermanGrief	(this), this);
+		pm.registerEvents(new NoEntry			(this), this);
+		pm.registerEvents(new NoExplosion		(this), this);
+		pm.registerEvents(new NoFire			(this), this);
+		pm.registerEvents(new NoLavaFlow		(this), this);
+		pm.registerEvents(new NoPistonGrief		(this), this);
+		pm.registerEvents(new NoWaterFlow		(this), this);
 		
 		this.getCommand("bp").setExecutor(new CommandExecutor(){
-
-			@SuppressWarnings("unused") // Because I'm OCD and if i see unused 1 more time while this is incomplete...
+			@SuppressWarnings("serial") // Because I'm OCD and if i see these 1 more time while this is incomplete...
 			@Override
 			public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 				String argsString = StringUtils.join(args, " ").toLowerCase();
@@ -49,13 +127,15 @@ public class Main extends JavaPlugin implements Listener {
 				if (args.length > 0){
 					if (args[0].equalsIgnoreCase("see")){
 						if (player != null){
-							ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
-							if (cr != null){
-								player.sendMessage(default_prefix + "Chunk '"+cr.getChunkX()+cr.getChunkZ()+"' is owned by: " + cr.getOwner());
-								player.sendMessage(ChatColor.GOLD + "Protections: " + ChatColor.GRAY + cr.getProtections());
-								player.sendMessage(ChatColor.GOLD + "Members: " + ChatColor.GRAY + cr.getAccess());
+							Region r = getRegion(player.getLocation().getChunk());
+							if (r != null){
+								sendMessage(player, new String[]{
+										"Chunk '"+r.getName()+"' is owned by: " + r.getOwner(),
+										"Protections: " + ChatColor.GRAY + r.getProtections(),
+										"Members: " + ChatColor.GRAY + r.getMembers()
+										});
 							}else{
-								player.sendMessage(default_prefix + "This chunk is empty.");
+								sendMessage(player, "This chunk is empty.");
 							}
 						}
 					}else if(args[0].equalsIgnoreCase("help")){
@@ -66,17 +146,18 @@ public class Main extends JavaPlugin implements Listener {
 						// XXX: Add members to region from flag
 						if (player != null){
 							if (BPPerms.canCreate(player)){
-								ChunkRegion cr = new ChunkRegion(player.getLocation(),player.getName());
+								Region r = new Region(player,1,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.NO_ENTRY);}});
 								if (argsString.contains("-f")){
-									ChunkRegion.generateFence(cr);
+									r.generateFence();
 								}
-								ChunkRegion.saveRegion(cr);
+								r.saveRegion();
+								addRegion(r);
 							}
 						}else return false;
 					}else if (args[0].equalsIgnoreCase("tool")){
 						if (player != null){
 							toggle(toolEnabled,player.getName());
-							player.sendMessage(default_prefix + "Toggled tool: " + ((toolEnabled.contains(player.getName()))?"On":"Off"));
+							sendMessage(player, "Toggled tool: " + ((toolEnabled.contains(player.getName()))?"On":"Off"));
 						}
 					}else if (args[0].equalsIgnoreCase("bypass")){
 						if (player != null){
@@ -86,31 +167,27 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}else if (args[0].equalsIgnoreCase("remove")){
 						// XXX: Remove generated fence?
-						ChunkRegion cr;
-						if (args.length == 2){
-							// remove chunk by ID
-							String targetID = args[1];
-							ChunkRegion.deleteRegion(targetID);
-						}else if (args.length == 1){
+						if (args.length == 1){
 							// remove chunk player is standing in
 							if (player != null){
 								Chunk ch = player.getLocation().getChunk();
-								if ((cr = ChunkRegion.getRegionAt(player.getLocation())) != null){
-									if (cr.getOwner().equals(player.getName()) || BPPerms.isAdmin(player)){
-										player.sendMessage(default_prefix + "Deleted chunk region");
-										ChunkRegion.deleteRegion(player.getWorld().getName() + ch.getX() + ch.getZ());
+								Region r = getRegion(ch);
+								if (r != null){
+									if (r.getOwner().getName().equals(player.getName()) || BPPerms.isAdmin(player)){
+										deleteRegion(r);
+										sendMessage(player, "Deleted chunk region");
 									}
 								}
 							}
 						}
 					}else if (args[0].equalsIgnoreCase("count")){
 						if (args.length == 2){
-							// TODO: Count total regions given player has
 							Player target = Bukkit.getPlayer(args[1]);
+							sendMessage(target, target.getName() + " has a total of " + new Owner(target).getRegionCount() + " region protections.");
 						}else if (args.length == 1){
 							Player target = sender instanceof Player? (Player)sender : null;
 							if (target != null){
-								// TODO: Count total regions sending player has
+								sendMessage(target, target.getName() + " has a total of " + new Owner(target).getRegionCount() + " region protections.");
 							}else return false;
 						}
 					}else if (args[0].equalsIgnoreCase("faith")){
@@ -118,11 +195,12 @@ public class Main extends JavaPlugin implements Listener {
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){
-								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
-								cr.addAccess(target.getName());
-								ChunkRegion.saveRegion(cr);
-								player.sendMessage(default_prefix + target.getName() + " added to chunk("+cr.getIdAlt()+").");
-								target.sendMessage(default_prefix + "You have been added to chunk("+cr.getIdAlt()+") by " + player.getName());
+								Region r = getRegion(player.getLocation().getChunk());
+								r.addMember(new Member(target));
+								addRegion(r);
+								r.saveRegion();
+								sendMessage(player, target.getName() + " added to the region("+r.getName()+").");
+								sendMessage(target, "You have been added to the region("+r.getName()+") by " + player.getName());
 							}else{
 								player.sendMessage(default_prefix + "Player not found.");
 							}
@@ -133,12 +211,12 @@ public class Main extends JavaPlugin implements Listener {
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){
-								ChunkRegion cr = ChunkRegion.getRegionAt(player.getLocation());
-								cr.removeAccess(target.getName());
-								player.sendMessage(default_prefix + target.getName() + " removed from chunk("+cr.getIdAlt()+").");
-								target.sendMessage(default_prefix + "You have been removed from chunk("+cr.getIdAlt()+")");
+								Region r = getRegion(player.getLocation().getChunk());
+								r.removeMember(new Member(target));
+								sendMessage(player, target.getName() + " removed from the region("+r.getName()+").");
+								sendMessage(target, "You have been removed from the region("+r.getName()+")");
 							}else{
-								player.sendMessage(default_prefix + "Player not found.");
+								sendMessage(player, "Player not found.");
 							}
 						}
 					}
@@ -148,6 +226,28 @@ public class Main extends JavaPlugin implements Listener {
 				}
 				return true;
 			}});
+	}
+	
+	public void sendMessage(Player player, MsgType type, String message){
+		player.sendMessage(type + message);
+	}
+	
+	public void sendMessage(Player player, String message){
+		sendMessage(player, MsgType.NORMAL, message);
+	}
+	
+	public void sendMessage(Player player, String[] lines){
+		sendMessage(player,MsgType.NORMAL,lines);
+	}
+	public void sendMessage(Player player, MsgType type, String[] lines){
+		if (lines != null){
+			sendMessage(player, type, lines[0]);
+			if (lines.length > 1){
+				for (int i = 1; i < lines.length; i++){
+					player.sendMessage("    " + type.getColor() + lines[i]);
+				}
+			}
+		}
 	}
 
 	@Override

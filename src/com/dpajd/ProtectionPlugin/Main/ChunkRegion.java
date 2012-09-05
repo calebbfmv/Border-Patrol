@@ -32,6 +32,7 @@ public class ChunkRegion {
 	private static FileConfiguration chunkYaml = null;
 	private HashSet<ProtectionType> protections;
 	
+	
 	public ChunkRegion(Location loc, String owner) {
 		_init(loc.getChunk().getX(),loc.getChunk().getZ(),loc.getWorld().getName(),owner);
 	}
@@ -67,6 +68,10 @@ public class ChunkRegion {
 	
 	public boolean hasAccess(String name){
 		return this.owner.equals(name) || access.contains(name);
+	}
+	
+	public boolean hasProtection(ProtectionType protection){
+		return this.protections.contains(protection);
 	}
 	
 	public ArrayList<ProtectionType> getProtections(){
