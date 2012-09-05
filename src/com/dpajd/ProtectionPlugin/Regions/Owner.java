@@ -37,6 +37,7 @@ public class Owner extends Member{
 	public void deleteRegions(){
 		for (Region r : getRegions()){
 			r.deleteRegion();
+			plugin.removeRegion(r);
 		}
 	}
 	

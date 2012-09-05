@@ -84,14 +84,25 @@ public class Main extends JavaPlugin{
 	public void addRegion(Region region){
 		regions.add(region);
 	}
+	
 	public void removeRegion(Region region){
 		Region remove = null;
 		for (Region r : regions){
 			if (r.getName().equals(region.getName())){
 				remove = r;
+				r.deleteRegion();
+				break;
 			}
 		}
 		if (remove != null) regions.remove(remove);
+	}
+	
+	public void reloadRegions(){
+		regions = Region.loadRegions();
+	}
+	
+	public void setRegions(ArrayList<Region> regions){
+		this.regions = regions;
 	}
 	public final ArrayList<Region> getRegions(){
 		return regions;
