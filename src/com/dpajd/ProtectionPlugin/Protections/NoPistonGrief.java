@@ -30,20 +30,17 @@ public class NoPistonGrief extends Protection{
 		}
 		if (chunks.size() > 1){
 			ArrayList<Chunk> chunkList = new ArrayList<Chunk>(chunks);
-			Region from = plugin.getRegion(chunkList.get(0));
-			Region to = plugin.getRegion(chunkList.get(1));
-			if (from.hasProtection(this.getType())){
-				if (from != null && to != null){
-					if (!to.getOwner().equals(from.getOwner())){
-						e.setCancelled(true);
-					}
-				}else if(from != null && to == null){
-					if (!from.isInside(e.getBlock())){
-						e.setCancelled(true);
-					}
+			Region from = plugin.getRegion(chunkList.get(1));
+			Region to = plugin.getRegion(chunkList.get(0));
+			if (from != null && to != null){
+				if (!to.getOwner().getName().equals(from.getOwner().getName())){
+					if (to.hasProtection(this.getType())) e.setCancelled(true);
+				}
+			}else if(to != null && from == null){
+				if (!to.isInside(e.getBlock())){
+					if (to.hasProtection(this.getType())) e.setCancelled(true);
 				}
 			}
-
 		}
 	}
 	
@@ -52,14 +49,12 @@ public class NoPistonGrief extends Protection{
 		if (e.isSticky()){
 			Region to = plugin.getRegion(e.getRetractLocation().getChunk());
 			Region from = plugin.getRegion(e.getBlock().getChunk());
-			if (to.hasProtection(this.getType())){
-				if (to != null && from != null){
-					if (!from.getOwner().equals(to.getOwner())){
-						e.setCancelled(true);
-					}
-				}else if(to != null && from == null){
-					e.setCancelled(true);
+			if (to != null && from != null){
+				if (!from.getOwner().equals(to.getOwner())){
+					if (to.hasProtection(this.getType())) e.setCancelled(true);
 				}
+			}else if(to != null && from == null){
+				if (to.hasProtection(this.getType())) e.setCancelled(true);
 			}
 		}
 	}

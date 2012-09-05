@@ -28,4 +28,8 @@ public class Member {
 	public boolean isOnline(){
 		return Bukkit.getPlayer(name).equals(null);
 	}
+	
+	public String toString(){
+		return this.name;
+	}
 }
