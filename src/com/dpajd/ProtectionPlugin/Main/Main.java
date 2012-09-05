@@ -174,12 +174,13 @@ public class Main extends JavaPlugin{
 						// XXX: Add members to region from flag
 						if (player != null){
 							if (BPPerms.canCreate(player)){
-								Region r = new Region(player,1,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.NO_PISTON_GRIEF);}});
+								Region r = new Region(player,1,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.NO_BUILD);}});
 								if (argsString.contains("-f")){
 									r.generateFence();
 								}
 								r.saveRegion();
 								addRegion(r);
+								sendMessage(player, "Created protection id: '" + r.getName()+"'");
 							}
 						}else return false;
 					}else if (args[0].equalsIgnoreCase("tool")){
