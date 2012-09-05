@@ -44,12 +44,6 @@ public class Region {
 		this.name = name;
 		this.bounds = bounds;
 		this.world = bounds[0].getWorld().getName();
-		System.out.println("SENDING BOUNDS TO LOAD CHUNKS");
-		System.out.println("bounds[0].getBlockX(): " + bounds[0].getBlockX());
-		System.out.println("bounds[1].getBlockX(): " + bounds[1].getBlockX());
-		System.out.println("bounds[0].getBlockZ(): " + bounds[0].getBlockZ());
-		System.out.println("bounds[1].getBlockZ(): " + bounds[1].getBlockZ());
-		System.out.println("-----------------------------");
 
 		this.chunks = getChunks(bounds);
 		this.members = members;
@@ -68,18 +62,11 @@ public class Region {
 	
 	private ArrayList<ChunkData> getChunks(Location[] bounds){
 		ArrayList<ChunkData> chunks = new ArrayList<ChunkData>();
-		System.out.println("LOADING CHUNKS --------------");
-		System.out.println("bounds[0].getBlockX(): " + bounds[0].getBlockX());
-		System.out.println("bounds[1].getBlockX(): " + bounds[1].getBlockX());
-		System.out.println("bounds[0].getBlockZ(): " + bounds[0].getBlockZ());
-		System.out.println("bounds[1].getBlockZ(): " + bounds[1].getBlockZ());
 		for (int x = bounds[0].getBlockX(); x < bounds[1].getBlockX(); x+=16){
 			for (int z = bounds[0].getBlockZ(); z < bounds[1].getBlockZ(); z+=16){
-				System.out.println("getChunks(Location[])'s x,z: (" +x+","+z+")" );
 				chunks.add(new ChunkData(bounds[0].getWorld().getChunkAt(new Location(bounds[0].getWorld(),x,0,z))));
 			}
 		}
-		System.out.println("END CHUNKS ------------------");
 		return chunks;
 	}
 	
@@ -180,7 +167,6 @@ public class Region {
 		for (Member m : members){
 			if (m.getName().equals(member.getName())){
 				members.remove(m);
-				System.out.println("Found Name, removing");
 				saveRegion();
 				break;
 			}
@@ -309,38 +295,33 @@ public class Region {
 				
 				Owner owner = new Owner(file.getName().substring(0, file.getName().lastIndexOf(".")));
 				
-				String name = regionYaml.getKeys(false).toArray(new String[regionYaml.getKeys(false).size()])[0];
-				
-				String world = regionYaml.getString(name + ".World");
-				
-				int x1 = regionYaml.getInt(name + ".Bounds.Location1.X");
-				int z1 = regionYaml.getInt(name + ".Bounds.Location1.Z");
-				int x2 = regionYaml.getInt(name + ".Bounds.Location2.X");
-				int z2 = regionYaml.getInt(name + ".Bounds.Location2.Z");
-				System.out.println("READING BOUNDS --------------");
-				System.out.println("x1: " + x1 + ", z1: " + z1);
-				System.out.println("x2: " + x2 + ", z2: " + z2);
-				System.out.println("-----------------------------");
-				System.out.println("TEXT READ -------------------");
-				System.out.println("x1: " + regionYaml.getString(name + ".Bounds.Location1.X") + ", z1: " + regionYaml.getString(name + ".Bounds.Location1.Z"));
-				System.out.println("x2: " + regionYaml.getString(name + ".Bounds.Location2.X") + ", z2: " + regionYaml.getString(name + ".Bounds.Location2.Z"));
-				System.out.println("-----------------------------");
-				
-				Location loc1 = new Location(Bukkit.getWorld(world),x1,0,z1);
-				Location loc2 = new Location(Bukkit.getWorld(world),x2,0,z2);
-				Location[] bounds = new Location[]{loc1,loc2};
-				
-				ArrayList<Member> members = new ArrayList<Member>();
-				for (String memberName : regionYaml.getStringList(name + ".Members")){
-					members.add(new Member(memberName));
+				if (regionYaml.getKeys(false).size() > 0){
+					String name = regionYaml.getKeys(false).toArray(new String[regionYaml.getKeys(false).size()])[0];
+					
+					String world = regionYaml.getString(name + ".World");
+					
+					int x1 = regionYaml.getInt(name + ".Bounds.Location1.X");
+					int z1 = regionYaml.getInt(name + ".Bounds.Location1.Z");
+					int x2 = regionYaml.getInt(name + ".Bounds.Location2.X");
+					int z2 = regionYaml.getInt(name + ".Bounds.Location2.Z");
+					
+					Location loc1 = new Location(Bukkit.getWorld(world),x1,0,z1);
+					Location loc2 = new Location(Bukkit.getWorld(world),x2,0,z2);
+					Location[] bounds = new Location[]{loc1,loc2};
+					
+					ArrayList<Member> members = new ArrayList<Member>();
+					for (String memberName : regionYaml.getStringList(name + ".Members")){
+						members.add(new Member(memberName));
+					}
+					
+					ArrayList<ProtectionType> protections = new ArrayList<ProtectionType>();
+					for (String protectionName : regionYaml.getStringList(name + ".Protections")){
+						protections.add(ProtectionType.getTypeFromName(protectionName));
+					}
+					
+					regions.add(new Region(name, owner, bounds, members, protections));
 				}
-				
-				ArrayList<ProtectionType> protections = new ArrayList<ProtectionType>();
-				for (String protectionName : regionYaml.getStringList(name + ".Protections")){
-					protections.add(ProtectionType.getTypeFromName(protectionName));
-				}
-				
-				regions.add(new Region(name, owner, bounds, members, protections));
+
 				
 			}
 			return regions;
