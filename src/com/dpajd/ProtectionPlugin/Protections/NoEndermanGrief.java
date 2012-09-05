@@ -20,11 +20,13 @@ public class NoEndermanGrief extends Protection{
 
 	@EventHandler
 	public void onEntityChangeBlockEvent(EntityChangeBlockEvent e){
-		Region r = plugin.getRegion(e.getBlock().getChunk());
-		if (r != null){
-			if (e.getEntity() instanceof Enderman){
-				if (r.hasProtection(this.getType())){
-					e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			Region r = plugin.getRegion(e.getBlock().getChunk());
+			if (r != null){
+				if (e.getEntity() instanceof Enderman){
+					if (r.hasProtection(this.getType())){
+						e.setCancelled(true);
+					}
 				}
 			}
 		}

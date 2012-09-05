@@ -20,17 +20,22 @@ public class NoFire extends Protection{
 
 	@EventHandler
 	public void onBlockBurnEvent(BlockBurnEvent e){
-		Region r = plugin.getRegion(e.getBlock().getChunk());
-		if (r != null){
-			if (r.hasProtection(this.getType())) e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			Region r = plugin.getRegion(e.getBlock().getChunk());
+			if (r != null){
+				if (r.hasProtection(this.getType())) e.setCancelled(true);
+			}
 		}
+
 	}
 	
 	@EventHandler
 	public void onBlockIgniteEvent(BlockIgniteEvent e){
-		Region r = plugin.getRegion(e.getBlock().getChunk());
-		if (r != null){
-			if (r.hasProtection(this.getType())) e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			Region r = plugin.getRegion(e.getBlock().getChunk());
+			if (r != null){
+				if (r.hasProtection(this.getType())) e.setCancelled(true);
+			}
 		}
 	}
 }

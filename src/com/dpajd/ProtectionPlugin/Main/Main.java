@@ -72,7 +72,6 @@ public class Main extends JavaPlugin{
 		return false;
 	}
 	
-	
 	public Region getRegion(Chunk chunk){
 		for (Region r : regions){
 			for (ChunkData cd : r.getChunks()){
@@ -109,6 +108,10 @@ public class Main extends JavaPlugin{
 		region.deleteRegion();
 	}
 	
+	public BPConfig getSettings(){
+		return settings;
+	}
+	
 	@Override
 	public void onEnable() {
 		pdf = this.getDescription();
@@ -140,7 +143,6 @@ public class Main extends JavaPlugin{
 				Player player = (sender instanceof Player) ? (Player)sender: null;
 				if (args.length > 0){
 					if (args[0].equalsIgnoreCase("see")){
-						// FIXME: Doesn't display chunk is occupied with new system.
 						if (player != null){
 							Region r = getRegion(player.getLocation().getChunk());
 							if (r != null){
@@ -206,7 +208,6 @@ public class Main extends JavaPlugin{
 							}else return false;
 						}
 					}else if (args[0].equalsIgnoreCase("faith")){
-						// FIXME: Update region so change is made. Currently requires /reload.
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){
@@ -221,7 +222,6 @@ public class Main extends JavaPlugin{
 													
 						}
 					}else if (args[0].equalsIgnoreCase("unfaith")){
-						// FIXME: Update region so change is made. Currently requires /reload.
 						if (args.length == 2){
 							Player target = Bukkit.getPlayer(args[1]);
 							if (target != null){

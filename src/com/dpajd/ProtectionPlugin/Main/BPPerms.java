@@ -7,8 +7,8 @@ import com.dpajd.ProtectionPlugin.Regions.Region;
 public class BPPerms {
 	
 	public static boolean canCreate(Player p){
-		ChunkRegion cr = ChunkRegion.getRegionAt(p.getLocation());
-		if (cr != null){
+		Region r = ((Main)Bukkit.getPluginManager().getPlugin("Border Patrol")).getRegion(p.getLocation().getChunk());
+		if (r != null){
 			return false;
 		}
 		return (p.hasPermission("BP.protect"));

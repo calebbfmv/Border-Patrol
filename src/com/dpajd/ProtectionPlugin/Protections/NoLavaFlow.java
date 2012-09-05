@@ -25,9 +25,11 @@ public class NoLavaFlow extends Protection{
 
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent e){
-		Region r = plugin.getRegion(e.getBlock().getChunk());
-		if (r != null && isLava(e.getBlock())){
-			if (r.hasProtection(this.getType())) e.setCancelled(true);
-		}
+    	if (plugin.getSettings().hasProtection(this.getType())){
+    		Region r = plugin.getRegion(e.getBlock().getChunk());
+    		if (r != null && isLava(e.getBlock())){
+    			if (r.hasProtection(this.getType())) e.setCancelled(true);
+    		}
+    	}
     }
 }

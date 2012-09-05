@@ -19,12 +19,15 @@ public class NoInteract extends Protection{
 	
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent e){
-		if (e.getClickedBlock() != null){
-			Region r = plugin.getRegion(e.getClickedBlock().getChunk());
-			if (r != null){
-				if (r.hasProtection(this.getType())) e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			if (e.getClickedBlock() != null){
+				Region r = plugin.getRegion(e.getClickedBlock().getChunk());
+				if (r != null){
+					if (r.hasProtection(this.getType())) e.setCancelled(true);
+				}
 			}
 		}
+
 	}
 
 }

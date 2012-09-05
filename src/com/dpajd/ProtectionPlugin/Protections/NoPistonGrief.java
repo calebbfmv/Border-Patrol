@@ -24,37 +24,42 @@ public class NoPistonGrief extends Protection{
 
 	@EventHandler
 	public void onBlockPistonExtendEvent(BlockPistonExtendEvent e){
-		HashSet<Chunk> chunks = new HashSet<Chunk>();
-		for (Block b : e.getBlocks()){
-			chunks.add(b.getChunk());
-		}
-		if (chunks.size() > 1){
-			ArrayList<Chunk> chunkList = new ArrayList<Chunk>(chunks);
-			Region from = plugin.getRegion(chunkList.get(1));
-			Region to = plugin.getRegion(chunkList.get(0));
-			if (from != null && to != null){
-				if (!to.getOwner().getName().equals(from.getOwner().getName())){
-					if (to.hasProtection(this.getType())) e.setCancelled(true);
-				}
-			}else if(to != null && from == null){
-				if (!to.isInside(e.getBlock())){
-					if (to.hasProtection(this.getType())) e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			HashSet<Chunk> chunks = new HashSet<Chunk>();
+			for (Block b : e.getBlocks()){
+				chunks.add(b.getChunk());
+			}
+			if (chunks.size() > 1){
+				ArrayList<Chunk> chunkList = new ArrayList<Chunk>(chunks);
+				Region from = plugin.getRegion(chunkList.get(1));
+				Region to = plugin.getRegion(chunkList.get(0));
+				if (from != null && to != null){
+					if (!to.getOwner().getName().equals(from.getOwner().getName())){
+						if (to.hasProtection(this.getType())) e.setCancelled(true);
+					}
+				}else if(to != null && from == null){
+					if (!to.isInside(e.getBlock())){
+						if (to.hasProtection(this.getType())) e.setCancelled(true);
+					}
 				}
 			}
 		}
+		
 	}
 	
 	@EventHandler
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent e){
 		if (e.isSticky()){
-			Region to = plugin.getRegion(e.getRetractLocation().getChunk());
-			Region from = plugin.getRegion(e.getBlock().getChunk());
-			if (to != null && from != null){
-				if (!from.getOwner().equals(to.getOwner())){
+			if (plugin.getSettings().hasProtection(this.getType())){
+				Region to = plugin.getRegion(e.getRetractLocation().getChunk());
+				Region from = plugin.getRegion(e.getBlock().getChunk());
+				if (to != null && from != null){
+					if (!from.getOwner().equals(to.getOwner())){
+						if (to.hasProtection(this.getType())) e.setCancelled(true);
+					}
+				}else if(to != null && from == null){
 					if (to.hasProtection(this.getType())) e.setCancelled(true);
 				}
-			}else if(to != null && from == null){
-				if (to.hasProtection(this.getType())) e.setCancelled(true);
 			}
 		}
 	}

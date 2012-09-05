@@ -24,9 +24,11 @@ public class NoWaterFlow extends Protection{
     
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent e){
-		Region r = plugin.getRegion(e.getBlock().getChunk());
-		if (r != null && isWater(e.getBlock())){
-			if (r.hasProtection(this.getType())) e.setCancelled(true);
+		if (plugin.getSettings().hasProtection(this.getType())){
+			Region r = plugin.getRegion(e.getBlock().getChunk());
+			if (r != null && isWater(e.getBlock())){
+				if (r.hasProtection(this.getType())) e.setCancelled(true);
+			}
 		}
     }
 }

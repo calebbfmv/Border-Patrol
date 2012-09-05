@@ -18,11 +18,13 @@ public class NoExplosion extends Protection{
 
 	@EventHandler
 	public void onEntityExplodeEvent(EntityExplodeEvent e){
-		for (Block b : e.blockList()){
-			if (plugin.isProtected(b.getChunk())){
-				if (plugin.getRegion(b.getChunk()).hasProtection(this.getType())){
-					e.blockList().clear();
-					break;
+		if (plugin.getSettings().hasProtection(this.getType())){
+			for (Block b : e.blockList()){
+				if (plugin.isProtected(b.getChunk())){
+					if (plugin.getRegion(b.getChunk()).hasProtection(this.getType())){
+						e.blockList().clear();
+						break;
+					}
 				}
 			}
 		}

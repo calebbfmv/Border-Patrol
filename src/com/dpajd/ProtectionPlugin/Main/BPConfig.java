@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 
-import com.dpajd.ProtectionPlugin.Main.ChunkRegion.ProtectionType;
+import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 
 public class BPConfig {
 	private Main plugin;
@@ -24,9 +24,7 @@ public class BPConfig {
 		plugin.getConfig().addDefault("Wand",Material.GOLD_AXE.name());
 		plugin.getConfig().addDefault("RegionSizes", new String[]{"1","2","3"});
 		for (ProtectionType type : ProtectionType.values()){
-			if (type != ProtectionType.NONE){
-				plugin.getConfig().addDefault("Protections."+type.name(),true);
-			}
+			plugin.getConfig().addDefault("Protections."+type.name(),true);
 		}
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveConfig();
@@ -44,6 +42,10 @@ public class BPConfig {
 		for (String protection : plugin.getConfig().getConfigurationSection("Protections").getKeys(false)){
 			protections.add(ProtectionType.getTypeFromName(protection));
 		}
+	}
+	
+	public boolean hasProtection(ProtectionType type){
+		return protections.contains(type);
 	}
 	
 	public Material getTool(){
