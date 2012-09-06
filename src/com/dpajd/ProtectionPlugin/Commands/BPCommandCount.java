@@ -18,9 +18,9 @@ public class BPCommandCount extends BPCommand{
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		Player player = (sender instanceof Player) ? (Player)sender: null;
 		if (player != null){
-			if (args != null){
+			if (args.length > 0){
 				Player target = Bukkit.getPlayer(args[0]);
-				plugin.sendMessage(target, target.getName() + " has a total of " + new Owner(target).getRegionCount() + " region protections.");
+				plugin.sendMessage(player, target.getName() + " has a total of " + new Owner(target).getRegionCount() + " region protections.");
 			}else{
 				plugin.sendMessage(player, player.getName() + " has a total of " + new Owner(player).getRegionCount() + " region protections.");
 			}

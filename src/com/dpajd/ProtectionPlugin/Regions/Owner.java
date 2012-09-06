@@ -15,19 +15,21 @@ public class Owner extends Member{
 		super(p);
 		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  this.name +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
+		getRegions();
 	}
 	
 	public Owner(String name){
 		super(name);
 		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  this.name +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
+		getRegions();
 	}
 	
 	public ArrayList<Region> getRegions(){
 		if (regionList.size() == 0){
 			ArrayList<Region> regionList = new ArrayList<Region>();
 			for (Region r : plugin.getRegions()){
-				if (r.getOwner().equals(this)) regionList.add(r);
+				if (r.getOwner().getName().equals(this.getName())) regionList.add(r);
 			}
 			this.regionList = regionList;
 		}
