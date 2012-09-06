@@ -17,7 +17,8 @@ public abstract class Protection implements Listener{
 		NO_LAVA_FLOW,
 		NO_PISTON_GRIEF,
 		NO_BUILD,
-		NO_INTERACT;
+		NO_INTERACT,
+		NO_MONSTER_SPAWNING;
 		
 		public static ProtectionType getTypeFromName(String name){
 			for (ProtectionType p : ProtectionType.values()){

@@ -13,22 +13,105 @@ commands:
         permission-message: You require <permission> to use this command!
         usage: |
                 /<command>
+    bpcreate:
+        aliases: []
+        description: Creates a region protection
+        permission: BP.protect
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> [size] [-f][-p <protection>]
+    bpaddflag:
+        aliases: []
+        description: Adds a protection flag to a region
+        permission: BP.protect
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> <flag>
+                
+    bpremoveflag:
+        aliases: []
+        description: Adds a protection flag to a region
+        permission: BP.protect
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> <flag>
+        
+    bpremove:
+        aliases: []
+        description: Removes a region protection
+        permission: BP.remove
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+    bpbypass:
+        aliases: []
+        description: Bypasses region protection
+        permission: BP.bypass
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+    bpcount:
+        aliases: []
+        description: Counts player region count
+        permission: BP.count
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> [player]
+    bpfaith:
+        aliases: []
+        description: Adds player to region members
+        permission: BP.protect
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> <player>
+    bpunfaith:
+        aliases: []
+        description: Removes player from region members
+        permission: BP.protect
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command> <player>
+    bpsee:
+        aliases: []
+        description: See if chunk is protected
+        permission: BP.see
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+    bptool:
+        aliases: []
+        description: Toggles use of the tool
+        permission: BP.tool
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+    
 permissions:
     BP.use:
-        descrption: Allows use of /BP
+        description: Allows use of /BP
+    BP.tool:
+        description: Allows use of the tool
+    BP.count:
+        description: Allows counting of regions
     BP.protect:
         description: Protect a region
-    BP.see:
-        description: View protections
-    BP.remove.self:
-        description: Remove own protections
-        default: true
-    BP.remove.others:
-        description: Remove other protections
     BP.protect.limit.X:
         description: Limit protection count
     BP.protect.limit.exempt:
         description: Exempt of limit protection count
+    BP.see:
+        description: View protections
+    BP.remove:
+        description: Allows removing protections
+    BP.remove.self:
+        description: Remove own protections
+        children:
+            BP.remove: true
+        default: true
+    BP.remove.others:
+        description: Remove other protections
+        children:
+            BP.remove: true
         
     # User Presets
     BP.basic:
@@ -49,5 +132,8 @@ permissions:
         children:
             BP.donator: true
             BP.see: true
+            BP.count: true
+            BP.tool: true
             BP.remove.others: true
             BP.protect.limit.exempt: true
+            BP.bypass: true
