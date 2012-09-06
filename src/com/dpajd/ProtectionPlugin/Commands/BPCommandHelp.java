@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.dpajd.ProtectionPlugin.Main.Main;
 
 public class BPCommandHelp extends BPCommand{
@@ -20,6 +19,7 @@ public class BPCommandHelp extends BPCommand{
 			if (args.length == 0){
 				plugin.sendMessage(player, new String[]{
 						"Command listing:",
+						ChatColor.DARK_RED + "----------------------------------------------",
 						"bp: "+ChatColor.GRAY+"Returns the running Border Patrol version",
 						"bphelp: "+ChatColor.GRAY+"Gives a command listing of Border Patrol",
 						"bpcreate: "+ChatColor.GRAY+"Creates a region protection",
@@ -31,6 +31,7 @@ public class BPCommandHelp extends BPCommand{
 						"bpunfaith: "+ChatColor.GRAY+"Removes player from region members",
 						"bpsee: "+ChatColor.GRAY+"See if a chunk is protected",
 						"bptool: "+ChatColor.GRAY+"Toggles use of the tool",
+						ChatColor.DARK_RED + "----------------------------------------------",
 						"Type "+ChatColor.GRAY+"/bphelp <command>" + ChatColor.GOLD + " for command syntax and information."
 				});
 			}else if (args.length > 0){

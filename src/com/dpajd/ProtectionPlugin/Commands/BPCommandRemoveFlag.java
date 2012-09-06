@@ -28,7 +28,7 @@ public class BPCommandRemoveFlag extends BPCommand{
 						if (type != null){
 							r.removeProtection(type);
 							r.saveRegion();
-							plugin.sendMessage(player, "Removed " + type.name() + " from the region.");
+							plugin.sendMessage(player, "Removed " + type.name() + " protection from the region.");
 						}else{
 							plugin.sendMessage(player, MsgType.ERROR, "Not a valid Protection Type!");
 						}	
