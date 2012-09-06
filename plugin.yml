@@ -1,6 +1,6 @@
 name: Border Patrol
 main: com.dpajd.ProtectionPlugin.Main.Main
-version: "0.0.1 Alpha"
+version: "0.2.1 Alpha"
 author: calebbfmv
 authors: [skore87]
 website: http://dev.bukkit.org/server-mods/border-patrol
