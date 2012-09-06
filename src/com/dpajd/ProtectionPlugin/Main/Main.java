@@ -94,7 +94,7 @@ public class Main extends JavaPlugin{
 	public void setRegions(ArrayList<Region> regions){
 		this.regions = regions;
 	}
-	public final ArrayList<Region> getRegions(){
+	public ArrayList<Region> getRegions(){
 		return regions;
 	}
 

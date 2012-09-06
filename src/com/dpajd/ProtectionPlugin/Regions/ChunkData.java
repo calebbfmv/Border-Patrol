@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
+import com.dpajd.ProtectionPlugin.Main.Main;
+
 public class ChunkData {
 	private int chunkX, chunkZ;
 	private String world;
@@ -40,10 +42,13 @@ public class ChunkData {
 		return getWorld().getChunkAt(chunkX, chunkZ);
 	}
 	
-	@Deprecated
 	public Region getRegion(){
-		// XXX: Get the region the ChunkData is associated with.
-		// is this really needed?
+		Main plugin = (Main) Bukkit.getPluginManager().getPlugin("Border Patrol");
+		for (Region r : plugin.getRegions()){
+			for (ChunkData c : r.getChunks()){
+				if (c.getChunk().equals(this.getChunk())) return r;
+			}
+		}
 		return null;
 	}
 	

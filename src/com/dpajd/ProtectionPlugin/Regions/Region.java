@@ -32,6 +32,7 @@ public class Region {
 		this.owner = new Owner(player);
 		this.world = player.getWorld().getName();
 		this.chunks = getChunks(width,chunk);
+		this.bounds = getBounds();
 		this.protections.addAll(protections);
 		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  owner.getName() +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
@@ -43,7 +44,6 @@ public class Region {
 		this.name = name;
 		this.bounds = bounds;
 		this.world = bounds[0].getWorld().getName();
-
 		this.chunks = getChunks(bounds);
 		this.members = members;
 		this.protections = protections;
@@ -59,32 +59,52 @@ public class Region {
 		return new Date(Integer.parseInt(name, 16));
 	}
 	
-	private ArrayList<ChunkData> getChunks(Location[] bounds){
+	public static ArrayList<ChunkData> getChunks(Location[] bounds){ // from offline
 		ArrayList<ChunkData> chunks = new ArrayList<ChunkData>();
-		for (int x = bounds[0].getBlockX(); x < bounds[1].getBlockX(); x+=16){
-			for (int z = bounds[0].getBlockZ(); z < bounds[1].getBlockZ(); z+=16){
+		for (int x = bounds[1].getBlockX(); x < bounds[0].getBlockX(); x+=16){
+			for (int z = bounds[1].getBlockZ(); z < bounds[0].getBlockZ(); z+=16){
 				chunks.add(new ChunkData(bounds[0].getWorld().getChunkAt(new Location(bounds[0].getWorld(),x,0,z))));
 			}
 		}
 		return chunks;
 	}
 	
-	private ArrayList<ChunkData> getChunks(int width, Chunk chunk){ // and set bounds =)
+	private Location[] getBounds(){ // from memory
+		ChunkData t = null;
+		ChunkData b = null;
+		for (ChunkData cd : chunks){
+			if (t == null && b == null){
+				t = cd;
+				b = cd;
+			}else{
+				if (cd.getChunkX() < t.getChunkX() && cd.getChunkZ() < t.getChunkZ()) t = cd;
+				if (cd.getChunkX() > b.getChunkX() && cd.getChunkZ() > b.getChunkZ()) t = cd;
+			}
+		}
+		Location tLoc = new Location(t.getWorld(), t.getChunkX()*16+15,0,t.getChunkZ()*16+15);
+		Location bLoc =	new Location(t.getWorld(), b.getChunkX()*16,0,b.getChunkZ()*16);
+		return new Location[]{tLoc,bLoc};
+	}
+	
+	private ArrayList<ChunkData> getChunks(int width, Chunk chunk){
 		ArrayList<ChunkData> chunkList = new ArrayList<ChunkData>();
-		// MUST BE ODD WIDTH!
 		if (width > 1){
-			width = (width - 1) / 2;
-			for (int chX = 0 - width; chX <= width; chX++){
-				for (int chZ = 0 - width; chZ <= width; chZ++){
-					chunkList.add(new ChunkData(chunk.getWorld().getChunkAt(chX, chZ)));
+			int size = (width - 1) / 2;
+			for (int chX = 0 - size; chX <= size; chX++){
+				for (int chZ = 0 - size; chZ <= size; chZ++){
+					chunkList.add(new ChunkData(chunk.getWorld().getChunkAt(chX+chunk.getX(), chZ+chunk.getZ())));
 				}
 			}
-			bounds[0] = new Location(chunk.getWorld(),(chunk.getX()+width)*16,0,(chunk.getZ()+width)*16);
-			bounds[1] = new Location(chunk.getWorld(),((chunk.getX()-width)*16)+15,0,((chunk.getZ()-width)*16)+15);
+			
+			bounds[0] = new Location(chunk.getWorld(),chunk.getX()*16-(16*((width-1)/2)),0,chunk.getZ()*16+(16*((width-1)/2)));
+			bounds[1] = new Location(chunk.getWorld(),chunk.getX()*16+(16*((width-1)/2))+15,0,chunk.getZ()*16-(16*((width-1)/2))+15);
+			
 		}else{
 			chunkList.add(new ChunkData(chunk));
+			
 			bounds[0] = new Location(chunk.getWorld(),chunk.getX()*16,0,chunk.getZ()*16);
 			bounds[1] = new Location(chunk.getWorld(),chunk.getX()*16+15,0,chunk.getZ()*16+15);
+			
 		}
 		
 		return chunkList;
@@ -182,10 +202,10 @@ public class Region {
 	
 	public boolean isInside(Block b){
 		if (b.getWorld().getName().equals(world)){
-			int x1 = bounds[0].getBlockX();
-			int x2 = bounds[1].getBlockX();
-			int z1 = bounds[0].getBlockZ();
-			int z2 = bounds[1].getBlockZ();
+			int x1 = bounds[1].getBlockX();
+			int x2 = bounds[0].getBlockX();
+			int z1 = bounds[1].getBlockZ();
+			int z2 = bounds[0].getBlockZ();
 			
 			Location bLoc = b.getLocation();
 			
@@ -198,10 +218,10 @@ public class Region {
 	}
 	
 	public void generateFence(){
-		int x1 = bounds[0].getBlockX();
-		int x2 = bounds[1].getBlockX();
-		int z1 = bounds[0].getBlockZ();
-		int z2 = bounds[1].getBlockZ();
+		int x1 = bounds[1].getBlockX();
+		int x2 = bounds[0].getBlockX();
+		int z1 = bounds[1].getBlockZ();
+		int z2 = bounds[0].getBlockZ();
 		World world = bounds[0].getWorld();
 		for (int x = x1; x <= x2; x ++){
 			world.getBlockAt(x, world.getHighestBlockYAt(x, z1), z1).setType(Material.FENCE);
@@ -211,7 +231,7 @@ public class Region {
 			world.getBlockAt(x1, world.getHighestBlockYAt(x1, z), z).setType(Material.FENCE);
 			world.getBlockAt(x2, world.getHighestBlockYAt(x2, z), z).setType(Material.FENCE);
 		}
-		world.getBlockAt(x1, world.getHighestBlockYAt(x1, z1+7), z1 + 8).setTypeIdAndData(Material.FENCE_GATE.getId(), (byte) 1, true);
+		world.getBlockAt(x1, world.getHighestBlockYAt(x1, z1+((z2-z1)/2)), z1+((z2-z1)/2)).setTypeIdAndData(Material.FENCE_GATE.getId(), (byte) 1, true);
 	}
 	
 	public void deleteRegion(){

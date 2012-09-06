@@ -22,7 +22,7 @@ public class BPConfig {
 	
 	private void defaultConfig(){
 		plugin.getConfig().addDefault("Wand",Material.GOLD_AXE.name());
-		plugin.getConfig().addDefault("RegionSizes", new String[]{"1","2","3"});
+		plugin.getConfig().addDefault("RegionSizes", new String[]{"1","3"});
 		for (ProtectionType type : ProtectionType.values()){
 			plugin.getConfig().addDefault("Protections."+type.name(),true);
 		}

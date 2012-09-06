@@ -20,7 +20,7 @@ public class BPCommandAddFlag extends BPCommand{
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		Player player = (sender instanceof Player) ? (Player)sender: null;
 		if (player != null){
-			if (args != null){
+			if (args.length > 0){
 				Region r = plugin.getRegion(player.getLocation().getChunk());
 				if (r != null){
 					if (r.getOwner().getName().equals(player.getName()) || BPPerms.isAdmin(player)){
@@ -33,7 +33,11 @@ public class BPCommandAddFlag extends BPCommand{
 							plugin.sendMessage(player, MsgType.ERROR, "Not a valid Protection Type!");
 						}	
 					}
+				}else{
+					plugin.sendMessage(player, MsgType.ERROR, "Cannot add a protection to this chunk!");
 				}
+			}else{
+				plugin.sendMessage(player, MsgType.ERROR, "You must provide a flag name!");
 			}
 		}
 		return true;
