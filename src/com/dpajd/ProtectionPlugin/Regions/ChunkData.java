@@ -43,6 +43,7 @@ public class ChunkData {
 	@Deprecated
 	public Region getRegion(){
 		// XXX: Get the region the ChunkData is associated with.
+		// is this really needed?
 		return null;
 	}
 	

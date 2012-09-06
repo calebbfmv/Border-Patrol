@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import com.dpajd.ProtectionPlugin.Protections.Protection;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 
 public class Region {
@@ -114,7 +113,7 @@ public class Region {
 		if (!protections.contains(p)) protections.add(p);
 	}
 	
-	public void removeProtection(Protection p){
+	public void removeProtection(ProtectionType p){
 		if (protections.contains(p)) protections.remove(p);
 	}
 	

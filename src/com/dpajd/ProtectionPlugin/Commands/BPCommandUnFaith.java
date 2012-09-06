@@ -5,7 +5,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.dpajd.ProtectionPlugin.Main.BPPerms;
 import com.dpajd.ProtectionPlugin.Main.Main;
+import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Regions.Member;
 import com.dpajd.ProtectionPlugin.Regions.Region;
 
@@ -20,15 +22,23 @@ public class BPCommandUnFaith extends BPCommand{
 		Player player = (sender instanceof Player) ? (Player)sender: null;
 		if (player != null){
 			if (args != null){
-				Player target = Bukkit.getPlayer(args[1]);
-				if (target != null){
-					Region r = plugin.getRegion(player.getLocation().getChunk());
-					r.removeMember(new Member(target));
-					r.saveRegion();								
-					plugin.sendMessage(player, target.getName() + " removed from the region("+r.getName()+").");
-					plugin.sendMessage(target, "You have been removed from the region("+r.getName()+")");
+				Region r = plugin.getRegion(player.getLocation().getChunk());
+				if (r != null){
+					if (r.getOwner().getName().equals(player.getName()) || BPPerms.isAdmin(player)){
+						Player target = Bukkit.getPlayer(args[1]);
+						if (target != null){
+							r.removeMember(new Member(target));
+							r.saveRegion();								
+							plugin.sendMessage(player, target.getName() + " removed from the region("+r.getName()+").");
+							plugin.sendMessage(target, "You have been removed from the region("+r.getName()+")");
+						}else{
+							plugin.sendMessage(player, MsgType.ERROR, "Player not found.");
+						}
+					}else{
+						plugin.sendMessage(player, MsgType.DENIED, "You cannnot modify someone elses region!");
+					}
 				}else{
-					plugin.sendMessage(player, "Player not found.");
+					plugin.sendMessage(player, MsgType.ERROR, "No region found to modify!");
 				}
 			}
 		}
