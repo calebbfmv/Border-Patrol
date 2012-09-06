@@ -136,6 +136,7 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new NoMonsterSpawning	(this), this);
 		pm.registerEvents(new NoMobDamage		(this), this);
 		pm.registerEvents(new NoPVP				(this), this);
+		pm.registerEvents(new NoVehicles		(this), this);
 		
 		getCommand("bpbypass").setExecutor(		new BPCommandBypass		(this));
 		getCommand("bpcount").setExecutor(		new BPCommandCount		(this));
