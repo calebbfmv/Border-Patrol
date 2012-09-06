@@ -19,7 +19,7 @@ public class NoPistonGrief extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_PISTON_GRIEF;
+		return ProtectionType.PISTON_GRIEF;
 	}
 
 	@EventHandler

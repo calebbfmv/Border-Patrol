@@ -25,7 +25,10 @@ public class BPCommandCreate extends BPCommand{
 		if (player != null){
 			String argsString = StringUtils.join(args, " ").toLowerCase();
 			if (BPPerms.canCreate(player)){
-				Region r = new Region(player,1,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.NO_BUILD);}});
+				if (argsString.contains("-size")){
+					
+				}
+				Region r = new Region(player,1,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.BUILD);}});
 				if (argsString.contains("-f")){
 					r.generateFence();
 				}

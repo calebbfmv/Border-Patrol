@@ -15,7 +15,7 @@ public class NoBuild extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_BUILD;
+		return ProtectionType.BUILD;
 	}
 
 	@EventHandler

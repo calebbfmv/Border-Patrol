@@ -18,7 +18,7 @@ public class NoMonsterSpawning extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_MONSTER_SPAWNING;
+		return ProtectionType.MONSTER_SPAWNING;
 	}
 	
 	@EventHandler

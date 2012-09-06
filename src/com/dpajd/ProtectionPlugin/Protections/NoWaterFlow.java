@@ -15,7 +15,7 @@ public class NoWaterFlow extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_WATER_FLOW;
+		return ProtectionType.WATER_FLOW;
 	}
 
     private boolean isWater(Block block){

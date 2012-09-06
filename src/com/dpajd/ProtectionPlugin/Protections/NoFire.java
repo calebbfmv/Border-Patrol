@@ -15,7 +15,7 @@ public class NoFire extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_FIRE;
+		return ProtectionType.FIRE;
 	}
 
 	@EventHandler

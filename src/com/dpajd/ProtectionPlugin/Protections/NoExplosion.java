@@ -13,7 +13,7 @@ public class NoExplosion extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_ENTRY;
+		return ProtectionType.ENTRY;
 	}
 
 	@EventHandler

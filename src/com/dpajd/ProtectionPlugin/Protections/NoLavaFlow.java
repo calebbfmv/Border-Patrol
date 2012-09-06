@@ -16,7 +16,7 @@ public class NoLavaFlow extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.NO_LAVA_FLOW;
+		return ProtectionType.LAVA_FLOW;
 	}
 	
     private boolean isLava(Block block){
