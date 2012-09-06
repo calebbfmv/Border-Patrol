@@ -67,6 +67,13 @@ public class NoMobDamage extends Protection{
 		if (plugin.getSettings().hasProtection(this.getType())){
 			if (e.getEntity() instanceof Player){
 				Region r = plugin.getRegion(e.getEntity().getLocation().getChunk());
+				if (r != null){
+					if (r.hasProtection(this.getType())){
+						if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION)){
+							e.setCancelled(true);
+						}
+					}
+				}
 			}
 		}
 	}
