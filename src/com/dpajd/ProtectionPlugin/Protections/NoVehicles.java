@@ -29,10 +29,12 @@ public class NoVehicles extends Protection{
 					Region r = plugin.getRegion(e.getClickedBlock().getLocation().getChunk());
 					if (r != null){
 						if (r.hasProtection(this.getType())){
-							if (new ArrayList<Material>(Arrays.asList(
-									Material.BOAT, Material.MINECART
-									)).contains(e.getPlayer().getItemInHand().getType())){
-								e.setCancelled(true);
+							if (!r.hasAccess(e.getPlayer())){
+								if (new ArrayList<Material>(Arrays.asList(
+										Material.BOAT, Material.MINECART
+										)).contains(e.getPlayer().getItemInHand().getType())){
+									e.setCancelled(true);
+								}
 							}
 						}
 					}

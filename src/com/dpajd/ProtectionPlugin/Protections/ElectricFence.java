@@ -45,7 +45,7 @@ public class ElectricFence extends Protection{
 							Vector v = p.getLocation().getDirection();
 							v.multiply(-1).add(new Vector(0,0.2,0));
 							p.setVelocity(v);
-							plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You aren't permitted entry!");
+							plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You aren't permitted entry! Ask " + rTo.getOwner().getName() + " to permit you.");
 						}
 					}
 				}

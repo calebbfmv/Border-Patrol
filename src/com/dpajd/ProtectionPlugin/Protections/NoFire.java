@@ -3,6 +3,7 @@ package com.dpajd.ProtectionPlugin.Protections;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Regions.Region;
@@ -35,6 +36,24 @@ public class NoFire extends Protection{
 			Region r = plugin.getRegion(e.getBlock().getChunk());
 			if (r != null){
 				if (r.hasProtection(this.getType())) e.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteractEvent(PlayerInteractEvent e){
+		if (!plugin.isBypass(e.getPlayer())){
+			if (plugin.getSettings().hasProtection(this.getType())){
+				if (e.getClickedBlock() != null){
+					Region r = plugin.getRegion(e.getClickedBlock().getChunk());
+					if (r != null){
+						if (r.hasProtection(this.getType())){
+							if (!r.hasAccess(e.getPlayer())){
+								e.setCancelled(true);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
