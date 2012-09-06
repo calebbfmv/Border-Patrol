@@ -28,6 +28,7 @@ public class BPCommandAddFlag extends BPCommand{
 						if (type != null){
 							r.addProtection(type);
 							r.saveRegion();
+							plugin.sendMessage(player, "Added " + type.name() + " to the region.");
 						}else{
 							plugin.sendMessage(player, MsgType.ERROR, "Not a valid Protection Type!");
 						}	
