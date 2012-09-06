@@ -23,15 +23,17 @@ public class NoVehicles extends Protection{
 	
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent e){
-		if (plugin.getSettings().hasProtection(this.getType())){
-			if (e.getClickedBlock() != null){
-				Region r = plugin.getRegion(e.getClickedBlock().getLocation().getChunk());
-				if (r != null){
-					if (r.hasProtection(this.getType())){
-						if (new ArrayList<Material>(Arrays.asList(
-								Material.BOAT, Material.MINECART
-								)).contains(e.getPlayer().getItemInHand().getType())){
-							e.setCancelled(true);
+		if (!plugin.isBypass(e.getPlayer())){
+			if (plugin.getSettings().hasProtection(this.getType())){
+				if (e.getClickedBlock() != null){
+					Region r = plugin.getRegion(e.getClickedBlock().getLocation().getChunk());
+					if (r != null){
+						if (r.hasProtection(this.getType())){
+							if (new ArrayList<Material>(Arrays.asList(
+									Material.BOAT, Material.MINECART
+									)).contains(e.getPlayer().getItemInHand().getType())){
+								e.setCancelled(true);
+							}
 						}
 					}
 				}

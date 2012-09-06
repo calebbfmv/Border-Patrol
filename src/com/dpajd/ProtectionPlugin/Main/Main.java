@@ -21,7 +21,7 @@ public class Main extends JavaPlugin{
 	PluginDescriptionFile pdf;
 	static final String default_prefix = ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD;
 	public HashSet<String> toolEnabled = new HashSet<String>();
-	HashSet<String> bypassEnabled = new HashSet<String>();
+	public HashSet<String> bypassEnabled = new HashSet<String>();
 	HashMap<String,Location> toolUse = new HashMap<String,Location>();
 	BPConfig settings = null;
 	private ArrayList<Region> regions = new ArrayList<Region>();
@@ -111,6 +111,14 @@ public class Main extends JavaPlugin{
 	
 	public BPConfig getSettings(){
 		return settings;
+	}
+	
+	public boolean isBypass(String player){
+		return bypassEnabled.contains(player);
+	}
+	
+	public boolean isBypass(Player player){
+		return isBypass(player.getName());
 	}
 	
 	@Override

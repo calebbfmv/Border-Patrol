@@ -11,7 +11,8 @@ public class BPCommandTool extends BPCommand{
 	public BPCommandTool(Main plugin) {
 		super(plugin);
 	}
-
+	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		Player player = (sender instanceof Player) ? (Player)sender: null;
 		if (player != null){

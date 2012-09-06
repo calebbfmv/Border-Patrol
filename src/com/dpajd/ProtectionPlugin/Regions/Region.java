@@ -145,6 +145,10 @@ public class Region {
 		return false;
 	}
 	
+	public boolean hasAccess(Player player){
+		return hasAccess(player.getName());
+	}
+	
 	public Owner getOwner(){
 		return owner;
 	}

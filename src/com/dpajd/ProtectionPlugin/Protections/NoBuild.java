@@ -20,11 +20,13 @@ public class NoBuild extends Protection{
 
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent e){
-		if (plugin.getSettings().hasProtection(this.getType())){
-			Region r = plugin.getRegion(e.getBlock().getChunk());
-			if (r != null){
-				if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
-					e.setCancelled(true);
+		if (!plugin.isBypass(e.getPlayer())){
+			if (plugin.getSettings().hasProtection(this.getType())){
+				Region r = plugin.getRegion(e.getBlock().getChunk());
+				if (r != null){
+					if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
+						e.setCancelled(true);
+					}
 				}
 			}
 		}
@@ -32,13 +34,15 @@ public class NoBuild extends Protection{
 	
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent e){
-		if (plugin.getSettings().hasProtection(this.getType())){
-			Region r = plugin.getRegion(e.getBlock().getChunk());
-			if (r != null){
-				if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
-					e.setCancelled(true);
+		if (!plugin.isBypass(e.getPlayer())){
+			if (plugin.getSettings().hasProtection(this.getType())){
+				Region r = plugin.getRegion(e.getBlock().getChunk());
+				if (r != null){
+					if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
+						e.setCancelled(true);
+					}
 				}
-			}
+			}	
 		}
 	}
 }

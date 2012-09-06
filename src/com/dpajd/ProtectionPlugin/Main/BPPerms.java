@@ -27,6 +27,10 @@ public class BPPerms {
 		return false;
 	}
 	
+	public static boolean canBypass(Player p){
+		return p.hasPermission("BP.bypass");
+	}
+	
 	public static boolean isAdmin(Player p){
 		return p.hasPermission("BP.admin");
 	}
