@@ -17,6 +17,7 @@ public class BPCommandHelp extends BPCommand{
 		Player player = (sender instanceof Player) ? (Player)sender: null;
 		if (player != null){
 			// TODO: BPCommandHelp
+
 		}
 		return true;
 	}

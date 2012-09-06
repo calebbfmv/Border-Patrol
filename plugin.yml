@@ -2,7 +2,7 @@ name: Border Patrol
 main: com.dpajd.ProtectionPlugin.Main.Main
 version: "0.0.1 Alpha"
 author: calebbfmv
-authors: [skore87, confuserr]
+authors: [skore87]
 website: http://dev.bukkit.org/server-mods/border-patrol
 description: Border Patrol is a Lightweight, advanced, grief protection, plugin! Allowing users, with the right Permission, to create protected land, and share it with friends!
 commands:
@@ -11,6 +11,11 @@ commands:
         description: 
         permission: BP.use
         permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
+    bphelp:
+        aliases: []
+        description: Gives a command listing of Border Patrol
         usage: |
                 /<command>
     bpcreate:

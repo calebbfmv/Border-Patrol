@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -19,10 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.dpajd.ProtectionPlugin.Commands.*;
 import com.dpajd.ProtectionPlugin.Protections.*;
-import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 import com.dpajd.ProtectionPlugin.Regions.ChunkData;
-import com.dpajd.ProtectionPlugin.Regions.Member;
-import com.dpajd.ProtectionPlugin.Regions.Owner;
 import com.dpajd.ProtectionPlugin.Regions.Region;
 
 public class Main extends JavaPlugin{
@@ -142,6 +134,7 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new NoPistonGrief		(this), this);
 		pm.registerEvents(new NoWaterFlow		(this), this);
 		pm.registerEvents(new NoInteract		(this), this);
+		pm.registerEvents(new NoMonsterSpawning	(this), this);
 		
 		getCommand("bpbypass").setExecutor(		new BPCommandBypass		(this));
 		getCommand("bpcount").setExecutor(		new BPCommandCount		(this));
