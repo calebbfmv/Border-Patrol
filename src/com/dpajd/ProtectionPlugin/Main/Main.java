@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import com.dpajd.ProtectionPlugin.Commands.*;
 import com.dpajd.ProtectionPlugin.Protections.*;
 import com.dpajd.ProtectionPlugin.Regions.ChunkData;
