@@ -90,6 +90,14 @@ commands:
         permission-message: You require <permission> to use this command!
         usage: |
                 /<command>
+                
+    bpflags:
+        aliases: []
+        description: Lists available protections
+        permission: BP.use
+        permission-message: You require <permission> to use this command!
+        usage: |
+                /<command>
     
 permissions:
     BP.use:

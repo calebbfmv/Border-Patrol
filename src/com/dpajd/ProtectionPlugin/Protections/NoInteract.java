@@ -23,7 +23,9 @@ public class NoInteract extends Protection{
 			if (e.getClickedBlock() != null){
 				Region r = plugin.getRegion(e.getClickedBlock().getChunk());
 				if (r != null){
-					if (r.hasProtection(this.getType())) e.setCancelled(true);
+					if (r.hasProtection(this.getType())){
+						if (!r.hasAccess(e.getPlayer().getName())) e.setCancelled(true);
+					}
 				}
 			}
 		}

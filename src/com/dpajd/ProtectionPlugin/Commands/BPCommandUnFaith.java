@@ -25,7 +25,7 @@ public class BPCommandUnFaith extends BPCommand{
 				Region r = plugin.getRegion(player.getLocation().getChunk());
 				if (r != null){
 					if (r.getOwner().getName().equals(player.getName()) || BPPerms.isAdmin(player)){
-						Player target = Bukkit.getPlayer(args[1]);
+						Player target = Bukkit.getPlayer(args[0]);
 						if (target != null){
 							r.removeMember(new Member(target));
 							r.saveRegion();								

@@ -146,6 +146,7 @@ public class Main extends JavaPlugin{
 		getCommand("bpaddflag").setExecutor(	new BPCommandAddFlag	(this));
 		getCommand("bpremoveflag").setExecutor(	new BPCommandRemoveFlag	(this));
 		getCommand("bphelp").setExecutor(		new BPCommandHelp		(this));
+		getCommand("bpflags").setExecutor(		new BPCommandFlags		(this));
 		
 	}
 	
