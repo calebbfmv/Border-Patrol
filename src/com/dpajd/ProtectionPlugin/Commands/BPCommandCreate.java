@@ -47,7 +47,7 @@ public class BPCommandCreate extends BPCommand{
 									Region r = new Region(player,size,c,new ArrayList<ProtectionType>(){{add(ProtectionType.BUILD);}});
 									boolean create = true;
 									for (ChunkData cd : r.getChunks()){
-										if (plugin.getRegion(cd.getChunk()) != null){
+										if (plugin.isProtected(cd.getChunk())){
 											create = false;
 											break;
 										}
