@@ -14,9 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 
 public class Region {
+	private static Main plugin = (Main) Bukkit.getPluginManager().getPlugin("Border Patrol");
 	private String name, world;
 	private File regionFile = null;
 	private FileConfiguration regionYaml = null;
@@ -34,7 +37,7 @@ public class Region {
 		this.chunks = getChunks(width,chunk);
 		this.bounds = getBounds();
 		this.protections.addAll(protections);
-		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  owner.getName() +".yml");
+		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  owner.getName() +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
 	}
 	
@@ -47,7 +50,7 @@ public class Region {
 		this.chunks = getChunks(bounds);
 		this.members = members;
 		this.protections = protections;
-		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  owner.getName() +".yml");
+		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  owner.getName() +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
 	}
 
@@ -59,22 +62,13 @@ public class Region {
 		return new Date(Long.parseLong(name, 16));
 	}
 	
-	// TODO: Look at references to getChunks(Location[]) and ensure locations are input properly
 	public static ArrayList<ChunkData> getChunks(Location[] bounds){ // from offline
 		ArrayList<ChunkData> chunks = new ArrayList<ChunkData>();
-		/*System.out.println("Region.getChunks(Location[]) -----------");
-		System.out.println("   Starting values: ");
-		System.out.println("       x:" + bounds[1].getBlockX());
-		System.out.println("       z:" + bounds[1].getBlockZ());
-		System.out.println("   Ending values: ");
-		System.out.println("       x:" + bounds[0].getBlockX());
-		System.out.println("       z:" + bounds[0].getBlockZ());*/
 		for (int x = bounds[1].getBlockX(); x < bounds[0].getBlockX(); x+=16){
 			for (int z = bounds[1].getBlockZ(); z < bounds[0].getBlockZ(); z+=16){
 				chunks.add(new ChunkData(bounds[0].getWorld().getChunkAt(new Location(bounds[0].getWorld(),x,0,z))));
 			}
 		}
-		//System.out.println("Region.getChunks(Location[]) returns " + chunks.size() + " chunks.");
 		return chunks;
 	}
 	
@@ -313,7 +307,7 @@ public class Region {
 	
 	public static ArrayList<Region> loadRegions(){
 		// File locations: plugins/Border Patrol/regions/<owner>.yml
-		File dir = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions");
+		File dir = new File(plugin.getDataFolder().getPath() + File.separator + "regions");
 		if (dir.exists()){
 			FilenameFilter filter = new FilenameFilter(){
 				@Override
@@ -326,32 +320,32 @@ public class Region {
 				FileConfiguration regionYaml = YamlConfiguration.loadConfiguration(file);
 				
 				Owner owner = new Owner(file.getName().substring(0, file.getName().lastIndexOf(".")));
-				
 				if (regionYaml.getKeys(false).size() > 0){
-					String name = regionYaml.getKeys(false).toArray(new String[regionYaml.getKeys(false).size()])[0];
-					
-					String world = regionYaml.getString(name + ".World");
-					
-					int x1 = regionYaml.getInt(name + ".Bounds.Location1.X");
-					int z1 = regionYaml.getInt(name + ".Bounds.Location1.Z");
-					int x2 = regionYaml.getInt(name + ".Bounds.Location2.X");
-					int z2 = regionYaml.getInt(name + ".Bounds.Location2.Z");
-					
-					Location loc1 = new Location(Bukkit.getWorld(world),x1,0,z1);
-					Location loc2 = new Location(Bukkit.getWorld(world),x2,0,z2);
-					Location[] bounds = new Location[]{loc1,loc2};
-					
-					ArrayList<Member> members = new ArrayList<Member>();
-					for (String memberName : regionYaml.getStringList(name + ".Members")){
-						members.add(new Member(memberName));
+					for (String name : regionYaml.getKeys(false)){
+						
+						String world = regionYaml.getString(name + ".World");
+						
+						int x1 = regionYaml.getInt(name + ".Bounds.Location1.X");
+						int z1 = regionYaml.getInt(name + ".Bounds.Location1.Z");
+						int x2 = regionYaml.getInt(name + ".Bounds.Location2.X");
+						int z2 = regionYaml.getInt(name + ".Bounds.Location2.Z");
+						
+						Location loc1 = new Location(Bukkit.getWorld(world),x1,0,z1);
+						Location loc2 = new Location(Bukkit.getWorld(world),x2,0,z2);
+						Location[] bounds = new Location[]{loc1,loc2};
+						
+						ArrayList<Member> members = new ArrayList<Member>();
+						for (String memberName : regionYaml.getStringList(name + ".Members")){
+							members.add(new Member(memberName));
+						}
+						
+						ArrayList<ProtectionType> protections = new ArrayList<ProtectionType>();
+						for (String protectionName : regionYaml.getStringList(name + ".Protections")){
+							protections.add(ProtectionType.getTypeFromName(protectionName));
+						}
+						
+						regions.add(new Region(name, owner, bounds, members, protections));
 					}
-					
-					ArrayList<ProtectionType> protections = new ArrayList<ProtectionType>();
-					for (String protectionName : regionYaml.getStringList(name + ".Protections")){
-						protections.add(ProtectionType.getTypeFromName(protectionName));
-					}
-					
-					regions.add(new Region(name, owner, bounds, members, protections));
 				}
 
 				
