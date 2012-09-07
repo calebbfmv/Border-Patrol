@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.dpajd.ProtectionPlugin.Commands.*;
 import com.dpajd.ProtectionPlugin.Protections.*;
+import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 import com.dpajd.ProtectionPlugin.Regions.ChunkData;
 import com.dpajd.ProtectionPlugin.Regions.Region;
 
@@ -57,6 +58,15 @@ public class Main extends JavaPlugin{
 		for (Region r : regions){
 			for (ChunkData cd : r.getChunks()){
 				if (cd.getChunk().equals(chunk)) return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isProtected(Chunk chunk, ProtectionType type){
+		for (Region r : regions){
+			for (ChunkData cd : r.getChunks()){
+				if (cd.getChunk().equals(chunk) && r.getProtections().contains(type)) return true;
 			}
 		}
 		return false;
