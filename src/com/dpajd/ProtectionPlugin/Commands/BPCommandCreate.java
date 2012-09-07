@@ -2,11 +2,8 @@ package com.dpajd.ProtectionPlugin.Commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,20 +44,15 @@ public class BPCommandCreate extends BPCommand{
 							if ((size-1)%2==0){ // if it is odd
 								if (plugin.getSettings().getSizes().contains(size)){
 									Chunk c = player.getLocation().getChunk();
-									
-									Location upper = new Location(player.getWorld(), (c.getX()*16)-(16*((size-1)/2)),0,(c.getZ()*16)+(16*((size-1)/2)));
-									Location lower = new Location(player.getWorld(), (c.getX()*16)+(16*((size-1)/2)),0,(c.getZ()-(16*((size-1)/2))));
-									
+									Region r = new Region(player,size,c,new ArrayList<ProtectionType>(){{add(ProtectionType.BUILD);}});
 									boolean create = true;
-									for (ChunkData cd : Region.getChunks(new Location[]{lower, upper})){
-										if (cd.getRegion() != null){
+									for (ChunkData cd : r.getChunks()){
+										if (plugin.getRegion(cd.getChunk()) != null){
 											create = false;
 											break;
 										}
 									}
-									Bukkit.broadcastMessage("create = " + create);
 									if (create){
-										Region r = new Region(player,size,player.getLocation().getChunk(),new ArrayList<ProtectionType>(){{add(ProtectionType.BUILD);}});
 										r.saveRegion();
 										if (argsString.contains("-f")){
 											r.generateFence();

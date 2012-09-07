@@ -52,20 +52,29 @@ public class Region {
 	}
 
 	private String generateName(){
-		return Integer.toHexString((int)System.currentTimeMillis());
+		return Long.toHexString(System.currentTimeMillis());
 	}
 	
 	public Date getDateCreated(){
-		return new Date(Integer.parseInt(name, 16));
+		return new Date(Long.parseLong(name, 16));
 	}
 	
+	// TODO: Look at references to getChunks(Location[]) and ensure locations are input properly
 	public static ArrayList<ChunkData> getChunks(Location[] bounds){ // from offline
 		ArrayList<ChunkData> chunks = new ArrayList<ChunkData>();
+		/*System.out.println("Region.getChunks(Location[]) -----------");
+		System.out.println("   Starting values: ");
+		System.out.println("       x:" + bounds[1].getBlockX());
+		System.out.println("       z:" + bounds[1].getBlockZ());
+		System.out.println("   Ending values: ");
+		System.out.println("       x:" + bounds[0].getBlockX());
+		System.out.println("       z:" + bounds[0].getBlockZ());*/
 		for (int x = bounds[1].getBlockX(); x < bounds[0].getBlockX(); x+=16){
 			for (int z = bounds[1].getBlockZ(); z < bounds[0].getBlockZ(); z+=16){
 				chunks.add(new ChunkData(bounds[0].getWorld().getChunkAt(new Location(bounds[0].getWorld(),x,0,z))));
 			}
 		}
+		//System.out.println("Region.getChunks(Location[]) returns " + chunks.size() + " chunks.");
 		return chunks;
 	}
 	

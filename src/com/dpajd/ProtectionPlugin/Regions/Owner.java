@@ -25,15 +25,19 @@ public class Owner extends Member{
 		getRegions();
 	}
 	
+	private void updateRegions(){
+		ArrayList<Region> regionList = new ArrayList<Region>();
+		for (Region r : plugin.getRegions()){
+			if (r.getOwner().getName().equals(this.getName())) regionList.add(r);
+		}
+		this.regionList = regionList;
+	}
+	
 	public ArrayList<Region> getRegions(){
 		if (regionList.size() == 0){
-			ArrayList<Region> regionList = new ArrayList<Region>();
-			for (Region r : plugin.getRegions()){
-				if (r.getOwner().getName().equals(this.getName())) regionList.add(r);
-			}
-			this.regionList = regionList;
+			updateRegions();
 		}
-		return regionList;
+		return this.regionList;
 	}
 	
 	public void deleteRegions(){
