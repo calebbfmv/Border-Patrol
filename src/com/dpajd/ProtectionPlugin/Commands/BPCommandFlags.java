@@ -47,7 +47,7 @@ public class BPCommandFlags extends BPCommand{
 				}else if (args[0].equalsIgnoreCase("LAVA_FLOW")){
 					plugin.sendMessage(player, "LAVA_FLOW: "+ChatColor.GRAY+"Prevents lava flowing in the region.");
 				}else if (args[0].equalsIgnoreCase("PISTON_GRIEF")){
-					plugin.sendMessage(player, "PISTON_GRIEF: "+ChatColor.GRAY+"Prevents pistons altering region.");
+					plugin.sendMessage(player, "PISTON_GRIEF: "+ChatColor.GRAY+"Prevents pistons altering region unless the piston originates from within.");
 				}else if (args[0].equalsIgnoreCase("BUILD")){
 					plugin.sendMessage(player, "BUILD: "+ChatColor.GRAY+"Prevents non-members building in region.");
 				}else if (args[0].equalsIgnoreCase("INTERACT")){
