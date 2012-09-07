@@ -78,7 +78,6 @@ public class NoChestAccess extends Protection{
 		        					}		        					
 		        				}		        				
 		        			}else if (rl != null && rr != null){
-		        				System.out.println("(rl != null && rr != null) rl:" + (rl == null ? "null":"!null") + ", rr:" + (rr == null ? "null":"!null"));
 			        			boolean canOpenLeft = false;
 		        				boolean canOpenRight = false;
 		        				

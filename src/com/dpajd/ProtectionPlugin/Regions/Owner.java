@@ -13,14 +13,14 @@ public class Owner extends Member{
 	
 	public Owner(Player p) {
 		super(p);
-		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  this.name +".yml");
+		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  this.name +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
 		getRegions();
 	}
 	
 	public Owner(String name){
 		super(name);
-		this.regionFile = new File("plugins" + File.separator + "Border Patrol" + File.separator + "regions" + File.separator +  this.name +".yml");
+		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  this.name +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
 		getRegions();
 	}

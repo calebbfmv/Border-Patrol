@@ -3,6 +3,7 @@ package com.dpajd.ProtectionPlugin.Commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -58,7 +59,7 @@ public class BPCommandCreate extends BPCommand{
 											r.generateFence();
 										}
 										plugin.addRegion(r);
-										plugin.sendMessage(player, "Created protection id: '" + r.getName()+"'");
+										plugin.sendMessage(player, "Created protection id: '" + ChatColor.GRAY + r.getName()+ChatColor.GOLD + "'");
 									}else{
 										plugin.sendMessage(player, MsgType.DENIED, "You cannot create a region overlapping another!");
 									}
@@ -82,7 +83,7 @@ public class BPCommandCreate extends BPCommand{
 						}
 						r.saveRegion();
 						plugin.addRegion(r);
-						plugin.sendMessage(player, "Created protection id: '" + r.getName()+"'");
+						plugin.sendMessage(player, "Created protection id: '" + ChatColor.GRAY + r.getName()+ChatColor.GOLD + "'");
 					}else{
 						plugin.sendMessage(player, MsgType.DENIED, "You cannot create a region overlapping another!");
 					}

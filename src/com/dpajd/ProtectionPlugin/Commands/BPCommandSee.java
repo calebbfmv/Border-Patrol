@@ -21,8 +21,9 @@ public class BPCommandSee extends BPCommand{
 			Region r = plugin.getRegion(player.getLocation().getChunk());
 			if (r != null){
 				plugin.sendMessage(player, new String[]{
-						"Chunk '"+r.getName()+"' is owned by: " + r.getOwner().getName(),
-						"Created: " + r.getDateCreated(),
+						"Chunk '"+ ChatColor.GRAY + r.getName()+ ChatColor.GOLD + "' is owned by: " + ChatColor.GRAY + r.getOwner().getName(),
+						"Width: " + ChatColor.GRAY + (int) Math.sqrt(r.getChunks().size()),
+						"Created: " + ChatColor.GRAY + r.getDateCreated(),
 						"Protections: " + ChatColor.GRAY + r.getProtections(),
 						"Members: " + ChatColor.GRAY + r.getMembers()
 						});

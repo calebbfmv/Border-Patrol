@@ -26,6 +26,7 @@ public class NoBuild extends Protection{
 				if (r != null){
 					if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
 						e.setCancelled(true);
+						e.getBlock().getState().update(true);
 					}
 				}
 			}
@@ -40,6 +41,7 @@ public class NoBuild extends Protection{
 				if (r != null){
 					if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
 						e.setCancelled(true);
+						e.getBlock().getState().update(true);
 					}
 				}
 			}	
