@@ -19,7 +19,7 @@ public class ElectricFence extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.ELECTRIC_FENCE;
+		return ProtectionType.ELECTRIC;
 	}
 
 	@EventHandler
@@ -53,5 +53,4 @@ public class ElectricFence extends Protection{
 			}
 		}
 	}
-	
 }

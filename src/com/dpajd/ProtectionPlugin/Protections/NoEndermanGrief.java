@@ -15,7 +15,7 @@ public class NoEndermanGrief extends Protection{
 
 	@Override
 	public ProtectionType getType() {
-		return ProtectionType.ENDERMAN_GRIEF;
+		return ProtectionType.ENDERMAN;
 	}
 
 	@EventHandler

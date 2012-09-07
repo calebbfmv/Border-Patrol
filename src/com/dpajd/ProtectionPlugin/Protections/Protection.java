@@ -8,20 +8,21 @@ public abstract class Protection implements Listener{
 	
 	public enum ProtectionType{
 		
-		ELECTRIC_FENCE,
+		ELECTRIC,
 		ENTRY,
 		EXPLOSION,
 		FIRE,
-		ENDERMAN_GRIEF,
+		ENDERMAN,
 		WATER_FLOW,
 		LAVA_FLOW,
-		PISTON_GRIEF,
+		PISTON,
 		BUILD,
 		INTERACT,
 		MONSTER_SPAWNING, 
 		PVP,
 		MOB_DAMAGE,
-		VEHICLES;
+		VEHICLES,
+		/*GHAST,ENDER_DRAGON,WITHER*/;
 		
 		public static ProtectionType getTypeFromName(String name){
 			for (ProtectionType p : ProtectionType.values()){
