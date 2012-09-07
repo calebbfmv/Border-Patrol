@@ -4,7 +4,9 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -73,6 +75,17 @@ public class NoMobDamage extends Protection{
 							e.setCancelled(true);
 						}
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onEntityBreakDoorEvent(EntityBreakDoorEvent e){
+		if (plugin.getSettings().hasProtection(this.getType())){
+			if (plugin.isProtected(e.getBlock().getChunk(), this.getType())){
+				if (e.getEntity() instanceof Zombie){
+					e.setCancelled(true);
 				}
 			}
 		}
