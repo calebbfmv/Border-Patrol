@@ -187,6 +187,8 @@ permissions:
             BP.flag.BUILD: true
             BP.flag.INTERACT: true
             BP.flag.VEHICLES: true
+            BP.flag.CHEST_ACCESS: true
+            BP.flag.USE: true
     BP.flag.presets.all:
         description: All flags
         children:
@@ -198,6 +200,8 @@ permissions:
             BP.flag.ELECTRIC: true
             BP.flag.FIRE: true
             BP.flag.PVP: true
+            BP.flag.CHEST_ACCESS: true
+            BP.flag.USE: true
     # User Presets
     BP.basic:
         description: Basic user
