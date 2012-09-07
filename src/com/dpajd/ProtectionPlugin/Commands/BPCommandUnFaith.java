@@ -34,8 +34,8 @@ public class BPCommandUnFaith extends BPCommand{
 							plugin.sendMessage(target, "You have been removed from the region("+r.getName()+")");
 						}else{
 							OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[0]);
-							if (targetOffline != null){
-								r.removeMember(new Member(target));
+							if (targetOffline.hasPlayedBefore()){
+								r.removeMember(new Member(targetOffline.getName()));
 								r.saveRegion();								
 								plugin.sendMessage(player, targetOffline.getName() + " removed from the region("+r.getName()+").");
 							}else{

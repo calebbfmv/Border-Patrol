@@ -22,6 +22,7 @@ public class BPCommandSee extends BPCommand{
 			if (r != null){
 				plugin.sendMessage(player, new String[]{
 						"Chunk '"+r.getName()+"' is owned by: " + r.getOwner().getName(),
+						"Created: " + r.getDateCreated(),
 						"Protections: " + ChatColor.GRAY + r.getProtections(),
 						"Members: " + ChatColor.GRAY + r.getMembers()
 						});

@@ -33,8 +33,8 @@ public class BPCommandFaith extends BPCommand{
 							plugin.sendMessage(target, "You have been added to the region("+r.getName()+")");
 						}else{
 							OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[0]);
-							if (targetOffline != null){
-								r.addMember(new Member(target));
+							if (targetOffline.hasPlayedBefore()){
+								r.addMember(new Member(targetOffline.getName()));
 								r.saveRegion();								
 								plugin.sendMessage(player, targetOffline.getName() + " added to the region("+r.getName()+").");
 							}else{
