@@ -32,34 +32,84 @@ public class NoChestAccess extends Protection{
 		            if (plugin.isProtected(c.getChunk(), this.getType())){
 		            	if (!plugin.getRegion(c.getChunk()).hasAccess(e.getPlayer().getName())){
 		            		e.setCancelled(true);
+		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
 		            	}
 		            }
 		        }else if (e.getInventory().getHolder() instanceof DoubleChest){
 		        	DoubleChest dc = (DoubleChest) e.getInventory().getHolder();
 		        	Chest left = (Chest) dc.getLeftSide();
 		        	Chest right = (Chest) dc.getRightSide();
-		        	
 		        	if (plugin.isProtected(left.getChunk(), this.getType()) || plugin.isProtected(right.getChunk(), this.getType())){
 		        		Region rl = plugin.getRegion(left.getChunk());
 		        		Region rr = plugin.getRegion(right.getChunk());
 		        		
-		        		if (rl != null){
-		        			// RIGHT will be null
-		        			if (!rl.hasAccess(e.getPlayer().getName())){
-		        				// open only RIGHT chest
-		        				e.setCancelled(true);
-		        				e.getPlayer().openInventory(right.getBlockInventory());
-		        			}else{
-		        				plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
-		        			}
+		        		// At least ONE of the possible two chunks is protected
+		        		if (rl == rr){
+		        			if (rl != null){		        				
+			        			if (rl.hasProtection(this.getType()) && !rl.hasAccess(e.getPlayer().getName())){
+			        				e.setCancelled(true);
+	    		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
+			        			}			        			
+		        			}		        			
 		        		}else{
-		        			// LEFT is null
-		        			if (!rr.hasAccess(e.getPlayer().getName())){
-		        				// open only LEFT chest
-		        				e.setCancelled(true);
-		        				e.getPlayer().openInventory(left.getBlockInventory());
-		        			}else{
-		        				plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
+		        			if ((rl != null) ^ (rr != null)){
+		        				// Only ONE is a region
+		        				if (rl != null){
+		        					if (rl.hasProtection(this.getType())){
+		        						System.out.println("rl has protection:" + this.getType());
+		        						if (!rl.hasAccess(e.getPlayer().getName())){
+		        							e.setCancelled(true);
+			    		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
+		        						}else{
+		        							e.setCancelled(true);
+					        				e.getPlayer().openInventory(left.getBlockInventory());
+		        						}
+		        					}
+		        				}else{
+		        					if (rr.hasProtection(this.getType())){
+		        						System.out.println("rr has protection:" + this.getType());
+		        						if (!rr.hasAccess(e.getPlayer().getName())){
+		        							e.setCancelled(true);
+			    		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
+		        						}else{
+		        							e.setCancelled(true);
+					        				e.getPlayer().openInventory(right.getBlockInventory());
+		        						}
+		        					}		        					
+		        				}		        				
+		        			}else if (rl != null && rr != null){
+		        				System.out.println("(rl != null && rr != null) rl:" + (rl == null ? "null":"!null") + ", rr:" + (rr == null ? "null":"!null"));
+			        			boolean canOpenLeft = false;
+		        				boolean canOpenRight = false;
+		        				
+		        				// BOTH are a region		        				
+		        				if (rl.hasProtection(this.getType())){
+		        					if (rl.hasAccess(e.getPlayer().getName())){
+		        						canOpenLeft = true;		        					
+		        					}
+		        				}else{
+		        					canOpenLeft = true;
+		        				}
+		        				if (rr.hasProtection(this.getType())){		
+		        					if (rr.hasAccess(e.getPlayer().getName())){
+		        						canOpenRight = true;		        				
+		        					}
+		        				}else{
+		        					canOpenRight = true;
+		        				}
+		        				
+		        				if (!(canOpenLeft == true && canOpenRight == true)){
+		        					if (canOpenLeft){
+	        							e.setCancelled(true);
+				        				e.getPlayer().openInventory(left.getBlockInventory());		        						
+		        					}else if (canOpenRight){
+	        							e.setCancelled(true);
+				        				e.getPlayer().openInventory(right.getBlockInventory());		        						
+		        					}else{
+	        							e.setCancelled(true);
+		    		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");		        						
+		        					}		        					
+		        				}		        				
 		        			}
 		        		}
 		        		
@@ -69,6 +119,7 @@ public class NoChestAccess extends Protection{
 		        	if (plugin.isProtected(f.getChunk(), this.getType())){
 		            	if (!plugin.getRegion(f.getChunk()).hasAccess(e.getPlayer().getName())){
 		            		e.setCancelled(true);
+		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that furnace!");
 		            	}
 		        	}
 		        }else if (e.getInventory().getHolder() instanceof StorageMinecart){
@@ -76,6 +127,7 @@ public class NoChestAccess extends Protection{
 		        	if (plugin.isProtected(s.getLocation().getChunk(), this.getType())){
 		            	if (!plugin.getRegion(s.getLocation().getChunk()).hasAccess(e.getPlayer().getName())){
 		            		e.setCancelled(true);
+		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that minecart!");
 		            	}
 		        	}
 		        }else if (e.getInventory().getHolder() instanceof Dispenser){
@@ -83,6 +135,7 @@ public class NoChestAccess extends Protection{
 		        	if (plugin.isProtected(d.getChunk(), this.getType())){
 		            	if (!plugin.getRegion(d.getChunk()).hasAccess(e.getPlayer().getName())){
 		            		e.setCancelled(true);
+		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that dispenser!");
 		            	}
 		        	}
 		        	
@@ -91,6 +144,7 @@ public class NoChestAccess extends Protection{
 		        	if (plugin.isProtected(b.getChunk(), this.getType())){
 		            	if (!plugin.getRegion(b.getChunk()).hasAccess(e.getPlayer().getName())){
 		            		e.setCancelled(true);
+		            		plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that brewing stand!");
 		            	}
 		        	}
 		        }
