@@ -36,20 +36,20 @@ public class BPCommandFlags extends BPCommand{
 						"Type "+ChatColor.GRAY+"/bpflags <flag>" + ChatColor.GOLD + " for descriptions."
 				});
 			}else if (args.length > 0){
-				if (args[0].equalsIgnoreCase("ELECTRIC_FENCE")){
-					plugin.sendMessage(player, "ELECTRIC_FENCE: "+ChatColor.GRAY+"Prevents non-members access and shocks them.");
+				if (args[0].equalsIgnoreCase("ELECTRIC")){
+					plugin.sendMessage(player, "ELECTRIC: "+ChatColor.GRAY+"Prevents non-members access and shocks them.");
 				}else if (args[0].equalsIgnoreCase("ENTRY")){
 					plugin.sendMessage(player, "ENTRY: "+ChatColor.GRAY+"Prevents non-members access.");
 				}else if (args[0].equalsIgnoreCase("FIRE")){
 					plugin.sendMessage(player, "FIRE: "+ChatColor.GRAY+"Prevents block burning and spread of fire.");
-				}else if (args[0].equalsIgnoreCase("ENDERMAN_GRIEF")){
-					plugin.sendMessage(player, "ENDERMAN_GRIEF: "+ChatColor.GRAY+"Prevents Enderman from picking-up or placing blocks.");
+				}else if (args[0].equalsIgnoreCase("ENDERMAN")){
+					plugin.sendMessage(player, "ENDERMAN: "+ChatColor.GRAY+"Prevents Enderman from picking-up or placing blocks.");
 				}else if (args[0].equalsIgnoreCase("WATER_FLOW")){
 					plugin.sendMessage(player, "WATER_FLOW: "+ChatColor.GRAY+"Prevents water flowing in the region.");
 				}else if (args[0].equalsIgnoreCase("LAVA_FLOW")){
 					plugin.sendMessage(player, "LAVA_FLOW: "+ChatColor.GRAY+"Prevents lava flowing in the region.");
-				}else if (args[0].equalsIgnoreCase("PISTON_GRIEF")){
-					plugin.sendMessage(player, "PISTON_GRIEF: "+ChatColor.GRAY+"Prevents pistons altering region unless the piston originates from within.");
+				}else if (args[0].equalsIgnoreCase("PISTON")){
+					plugin.sendMessage(player, "PISTON: "+ChatColor.GRAY+"Prevents pistons altering region unless the piston originates from within.");
 				}else if (args[0].equalsIgnoreCase("BUILD")){
 					plugin.sendMessage(player, "BUILD: "+ChatColor.GRAY+"Prevents non-members building in region.");
 				}else if (args[0].equalsIgnoreCase("INTERACT")){
