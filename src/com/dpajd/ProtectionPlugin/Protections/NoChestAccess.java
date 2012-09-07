@@ -8,9 +8,8 @@ import org.bukkit.block.Furnace;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
 import com.dpajd.ProtectionPlugin.Main.Main;
-import com.dpajd.ProtectionPlugin.Regions.Owner;
+import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Regions.Region;
 
 public class NoChestAccess extends Protection{
@@ -43,17 +42,27 @@ public class NoChestAccess extends Protection{
 		        	if (plugin.isProtected(left.getChunk(), this.getType()) || plugin.isProtected(right.getChunk(), this.getType())){
 		        		Region rl = plugin.getRegion(left.getChunk());
 		        		Region rr = plugin.getRegion(right.getChunk());
-		        		if (rl.equals(rr)){
+		        		
+		        		if (rl != null){
+		        			// RIGHT will be null
 		        			if (!rl.hasAccess(e.getPlayer().getName())){
+		        				// open only RIGHT chest
 		        				e.setCancelled(true);
+		        				e.getPlayer().openInventory(right.getBlockInventory());
+		        			}else{
+		        				plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
 		        			}
 		        		}else{
-		        			boolean al = rl.hasAccess(e.getPlayer().getName());
-		        			boolean ar = rr.hasAccess(e.getPlayer().getName());
-		        			if (!(!(al ^ ar) && al)){ // if no access to one of the chest parts
+		        			// LEFT is null
+		        			if (!rr.hasAccess(e.getPlayer().getName())){
+		        				// open only LEFT chest
 		        				e.setCancelled(true);
+		        				e.getPlayer().openInventory(left.getBlockInventory());
+		        			}else{
+		        				plugin.sendMessage(e.getPlayer().getName(), MsgType.DENIED, "You do not have access to that chest!");
 		        			}
 		        		}
+		        		
 		        	}
 		        }else if (e.getInventory().getHolder() instanceof Furnace){
 		        	Furnace f = (Furnace) e.getInventory().getHolder();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -155,6 +157,7 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new NoMobDamage		(this), this);
 		pm.registerEvents(new NoPVP				(this), this);
 		pm.registerEvents(new NoVehicles		(this), this);
+		pm.registerEvents(new NoChestAccess		(this), this);
 		
 		getCommand("bpbypass").setExecutor(		new BPCommandBypass		(this));
 		getCommand("bpcount").setExecutor(		new BPCommandCount		(this));
@@ -170,6 +173,22 @@ public class Main extends JavaPlugin{
 		getCommand("bpflags").setExecutor(		new BPCommandFlags		(this));
 		getCommand("bp").setExecutor(			new BPCommandBP			(this));
 		
+	}
+	
+	public void sendMessage(String player, MsgType type, String message){
+		sendMessage(Bukkit.getPlayerExact(player), type, message);
+	}
+	
+	public void sendMessage(String player, String message){
+		sendMessage(Bukkit.getPlayerExact(player), message);
+	}
+	
+	public void sendMessage(String player, String[] lines){
+		sendMessage(Bukkit.getPlayerExact(player), lines);
+	}
+	
+	public void sendMessage(String player, MsgType type, String[] lines){
+		sendMessage(Bukkit.getPlayerExact(player), type, lines);
 	}
 	
 	public void sendMessage(Player player, MsgType type, String message){
