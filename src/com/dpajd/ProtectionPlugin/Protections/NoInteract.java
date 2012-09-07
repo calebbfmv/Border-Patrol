@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Regions.Region;
 
+@Deprecated
 public class NoInteract extends Protection{
 
 	public NoInteract(Main plugin) {

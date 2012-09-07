@@ -62,6 +62,8 @@ public class BPCommandFlags extends BPCommand{
 					plugin.sendMessage(player, "MOB_DAMAGE: "+ChatColor.GRAY+"Prevents monsters causing damage within region.");
 				}else if (args[0].equalsIgnoreCase("VEHICLES")){
 					plugin.sendMessage(player, "VEHICLES: "+ChatColor.GRAY+"Prevents vehicle placement within region.");
+				}else if (args[0].equalsIgnoreCase("CHEST_ACCESS")){
+					plugin.sendMessage(player, "CHEST_ACCESS: "+ChatColor.GRAY+"Prevent access to chests, furnaces, etc in region.");
 				}else{
 					plugin.sendMessage(player, MsgType.ERROR, "Protection Flag not recognized!");
 				}

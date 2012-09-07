@@ -1,6 +1,6 @@
 name: Border Patrol
 main: com.dpajd.ProtectionPlugin.Main.Main
-version: "0.3.4 Beta"
+version: "0.3.6 Beta"
 author: calebbfmv
 authors: [skore87]
 website: http://dev.bukkit.org/server-mods/border-patrol
@@ -160,6 +160,8 @@ permissions:
         description: Prevent PVP in region
     BP.flag.VEHICLES:
         description: Prevent vehicle placement in region
+    BP.flag.CHEST_ACCESS:
+        description: Prevent access to chests, furnaces, etc in region.
         
     #Protection flag presets
     BP.flag.presets.fluid:
