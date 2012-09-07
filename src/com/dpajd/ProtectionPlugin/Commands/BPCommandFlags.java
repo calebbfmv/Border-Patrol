@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.dpajd.ProtectionPlugin.Main.BPPerms;
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
@@ -23,11 +25,11 @@ public class BPCommandFlags extends BPCommand{
 				
 				ArrayList<String> protections = new ArrayList<String>();
 				for (ProtectionType t : ProtectionType.values()){
-					protections.add(t.name());
+					if (BPPerms.hasFlag(player, t)) protections.add(t.name());
 				}
 								
 				plugin.sendMessage(player, new String[]{
-						"Protection Flags listing:",
+						"Protection Flags available to you:",
 						ChatColor.DARK_RED + "----------------------------------------------",
 						ChatColor.GRAY + protections.toString(),
 						ChatColor.DARK_RED + "----------------------------------------------",

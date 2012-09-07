@@ -26,18 +26,22 @@ public class BPCommandAddFlag extends BPCommand{
 					if (r.getOwner().getName().equals(player.getName()) || BPPerms.isAdmin(player)){
 						ProtectionType type = ProtectionType.getTypeFromName(args[0]);
 						if (type != null){
-							r.addProtection(type);
-							r.saveRegion();
-							plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+							if (BPPerms.hasFlag(player, type)){
+								r.addProtection(type);
+								r.saveRegion();
+								plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+							}else{
+								plugin.sendMessage(player, MsgType.DENIED, "You do not have permission to add that protection type!");
+							}
 						}else{
-							plugin.sendMessage(player, MsgType.ERROR, "Not a valid Protection Type!");
+							plugin.sendMessage(player, MsgType.DENIED, "Not a valid protection type!");
 						}	
 					}
 				}else{
-					plugin.sendMessage(player, MsgType.ERROR, "Cannot add a protection to this chunk!");
+					plugin.sendMessage(player, MsgType.DENIED, "Cannot add a protection to this chunk!");
 				}
 			}else{
-				plugin.sendMessage(player, MsgType.ERROR, "You must provide a flag name!");
+				plugin.sendMessage(player, MsgType.DENIED, "You must provide a flag name!");
 			}
 		}
 		return true;
