@@ -152,7 +152,6 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new NoLavaFlow		(this), this);
 		pm.registerEvents(new NoPistonGrief		(this), this);
 		pm.registerEvents(new NoWaterFlow		(this), this);
-		pm.registerEvents(new NoInteract		(this), this);
 		pm.registerEvents(new NoMonsterSpawning	(this), this);
 		pm.registerEvents(new NoMobDamage		(this), this);
 		pm.registerEvents(new NoPVP				(this), this);
