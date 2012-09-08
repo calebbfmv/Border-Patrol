@@ -56,7 +56,6 @@ public class NoChestAccess extends Protection{
 		        				// Only ONE is a region
 		        				if (rl != null){
 		        					if (rl.hasProtection(this.getType())){
-		        						System.out.println("rl != null - > rl has protection:" + this.getType());
 		        						if (!rl.hasAccess(e.getPlayer().getName())){
 		        							e.setCancelled(true);
 					        				e.getPlayer().openInventory(right.getBlockInventory());
@@ -67,7 +66,6 @@ public class NoChestAccess extends Protection{
 		        					}
 		        				}else{
 		        					if (rr.hasProtection(this.getType())){
-		        						System.out.println("rl == null - > rr has protection:" + this.getType());
 		        						if (!rr.hasAccess(e.getPlayer().getName())){
 		        							e.setCancelled(true);
 					        				e.getPlayer().openInventory(left.getBlockInventory());
