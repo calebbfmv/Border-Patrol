@@ -1,15 +1,16 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
 import net.minecraft.server.EntityCreeper;
+import net.minecraft.server.EntitySlime;
 
-import org.bukkit.entity.Monster;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import com.dpajd.ProtectionPlugin.CustomEvents.BPHostileEntityMoveEvent;
+import com.dpajd.ProtectionPlugin.CustomEvents.BPEntityMoveEvent;
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Regions.Region;
@@ -58,29 +59,31 @@ public class ElectricFence extends Protection{
 	}
 	
 	@EventHandler
-	public void onBPHostileEntityMoveEvent(BPHostileEntityMoveEvent e){
+	public void onBPEntityMoveEvent(BPEntityMoveEvent e){
 		if (plugin.getSettings().hasProtection(this.getType())){
 			if (plugin.isProtected(e.getTo().getChunk())){
 				Region rTo = plugin.getRegion(e.getTo().getChunk());
 				Region rFrom = plugin.getRegion(e.getFrom().getChunk());
 				if (!rTo.equals(rFrom)){
 					if (rTo.hasProtection(this.getType())){
-						Monster m = e.getMonster();
-						m.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 15, 5));
-						m.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 5));
+						LivingEntity entity = e.getCreature();
+						entity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 15, 5));
+						entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 5));
 						
-						m.getWorld().strikeLightningEffect(m.getLocation());
+						entity.getWorld().strikeLightningEffect(entity.getLocation());
 						
-						if (m instanceof EntityCreeper){
-							((EntityCreeper)m).setPowered(true);
+						if (entity instanceof EntityCreeper){
+							((EntityCreeper)entity).setPowered(true);
 						}
 						
-						m.setHealth((int) Math.floor(m.getHealth()/4));
-						m.teleport(e.getFrom());
+						if (!(entity instanceof EntitySlime)){ // Prevent slime splitting by not damaging it
+							entity.setHealth((int) Math.floor(entity.getHealth()/4));
+						}
+						entity.teleport(e.getFrom());
 						
-						Vector v = m.getLocation().getDirection();
+						Vector v = entity.getLocation().getDirection();
 						v.multiply(-3).add(new Vector(0,0.5,0));
-						m.setVelocity(v);
+						entity.setVelocity(v);
 					}
 				}
 			}

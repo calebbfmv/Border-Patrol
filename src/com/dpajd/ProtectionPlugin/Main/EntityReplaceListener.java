@@ -20,7 +20,7 @@ public class EntityReplaceListener implements Listener{
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCreatureSpawn(CreatureSpawnEvent e){
 		Location location = e.getLocation();
 		Entity entity = e.getEntity();

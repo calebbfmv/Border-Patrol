@@ -41,7 +41,7 @@ public class NoEntry extends Protection{
 	}
 	
 	@EventHandler
-	public void onBPHostileEntityMoveEvent(BPHostileEntityMoveEvent e){
+	public void onBPEntityMoveEvent(BPHostileEntityMoveEvent e){
 		if (plugin.getSettings().hasProtection(this.getType())){
 			if (plugin.isProtected(e.getTo().getChunk())){
 				Region rTo = plugin.getRegion(e.getTo().getChunk());
