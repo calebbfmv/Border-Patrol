@@ -1,5 +1,6 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
+import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.entity.Minecart;
@@ -37,14 +38,19 @@ public class NoUse extends Protection{
 								plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
 							}
 						}else if (e.getClickedBlock().getState() instanceof Jukebox || e.getClickedBlock().getState() instanceof NoteBlock){
-							e.setCancelled(true);
-							plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
+							if (!plugin.getRegion(e.getClickedBlock().getChunk()).hasAccess(e.getPlayer())){
+								e.setCancelled(true);
+								plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
+							}
+						}else if (e.getClickedBlock().getType() == Material.WOOD_PLATE || e.getClickedBlock().getType() == Material.STONE_PLATE){
+							if (!plugin.getRegion(e.getClickedBlock().getChunk()).hasAccess(e.getPlayer())){
+								e.setCancelled(true);
+								plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-
-	// XXX: Hook redstone change event for external sources and maybe tripwire and pressure plates?
 }
