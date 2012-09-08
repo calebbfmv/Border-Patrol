@@ -52,8 +52,6 @@ public class BPCommandFlags extends BPCommand{
 					plugin.sendMessage(player, "PISTON: "+ChatColor.GRAY+"Prevents pistons altering region unless the piston originates from within.");
 				}else if (args[0].equalsIgnoreCase("BUILD")){
 					plugin.sendMessage(player, "BUILD: "+ChatColor.GRAY+"Prevents non-members building in region.");
-				}else if (args[0].equalsIgnoreCase("INTERACT")){
-					plugin.sendMessage(player, "INTERACT: "+ChatColor.GRAY+"Prevents non-members interacting in region.");
 				}else if (args[0].equalsIgnoreCase("MONSTER_SPAWNING")){
 					plugin.sendMessage(player, "MONSTER_SPAWNING: "+ChatColor.GRAY+"Prevents monsters spawning within region.");
 				}else if (args[0].equalsIgnoreCase("PVP")){
@@ -64,6 +62,8 @@ public class BPCommandFlags extends BPCommand{
 					plugin.sendMessage(player, "VEHICLES: "+ChatColor.GRAY+"Prevents vehicle placement within region.");
 				}else if (args[0].equalsIgnoreCase("CHEST_ACCESS")){
 					plugin.sendMessage(player, "CHEST_ACCESS: "+ChatColor.GRAY+"Prevent access to chests, furnaces, etc in region.");
+				}else if (args[0].equalsIgnoreCase("USE")){
+					plugin.sendMessage(player, "USE: "+ChatColor.GRAY+"Prevent use of buttons, switches, doors, trapdoors, gates, noteblock, jukebox, and bed.");
 				}else{
 					plugin.sendMessage(player, MsgType.ERROR, "Protection Flag not recognized!");
 				}
