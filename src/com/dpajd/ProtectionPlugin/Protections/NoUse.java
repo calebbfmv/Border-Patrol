@@ -1,6 +1,7 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
 import org.bukkit.block.Jukebox;
+import org.bukkit.block.NoteBlock;
 import org.bukkit.entity.Minecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -35,7 +36,7 @@ public class NoUse extends Protection{
 								e.setCancelled(true);
 								plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
 							}
-						}else if (e.getClickedBlock() instanceof Jukebox){
+						}else if (e.getClickedBlock().getState() instanceof Jukebox || e.getClickedBlock().getState() instanceof NoteBlock){
 							e.setCancelled(true);
 							plugin.sendMessage(e.getPlayer(), MsgType.DENIED, "You are not allowed to do that!");
 						}
