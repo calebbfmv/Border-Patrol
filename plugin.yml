@@ -162,8 +162,17 @@ permissions:
         description: Prevent vehicle placement in region
     BP.flag.CHEST_ACCESS:
         description: Prevent access to chests, furnaces, etc in region.
+    BP.flag.FAREWELL:
+        description: Adds a farewell message.
+    BP.flag.WELCOME:
+        description: Adds a welcome message.
         
     #Protection flag presets
+    BP.flag.presets.messages:
+        description: Allow messages to be sent on entry and exit of region.
+        children:
+            BP.flag.WELCOME: true
+            BP.flag.FAREWELL: true
     BP.flag.presets.fluid:
         description: Prevent water and lavaflow.
         children:
@@ -196,6 +205,7 @@ permissions:
             BP.flag.presets.mob: true
             BP.flag.presets.mech: true
             BP.flag.presets.modify: true
+            BP.flag.presets.messages: true
             BP.flag.ENTRY: true
             BP.flag.ELECTRIC: true
             BP.flag.FIRE: true
@@ -209,6 +219,7 @@ permissions:
             BP.command.use: true
             BP.command.protect: true
             BP.command.remove.self: true
+            BP.flag.presets.messages: true
             BP.flag.presets.modify: true
             BP.flag.presets.mech: true
             BP.flag.FIRE: true
