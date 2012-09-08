@@ -1,12 +1,15 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
+import net.minecraft.server.EntityCreeper;
+
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-
+import com.dpajd.ProtectionPlugin.CustomEvents.BPHostileEntityMoveEvent;
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Regions.Region;
@@ -53,4 +56,35 @@ public class ElectricFence extends Protection{
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onBPHostileEntityMoveEvent(BPHostileEntityMoveEvent e){
+		if (plugin.getSettings().hasProtection(this.getType())){
+			if (plugin.isProtected(e.getTo().getChunk())){
+				Region rTo = plugin.getRegion(e.getTo().getChunk());
+				Region rFrom = plugin.getRegion(e.getFrom().getChunk());
+				if (!rTo.equals(rFrom)){
+					if (rTo.hasProtection(this.getType())){
+						Monster m = e.getMonster();
+						m.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 15, 5));
+						m.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 5));
+						
+						m.getWorld().strikeLightningEffect(m.getLocation());
+						
+						if (m instanceof EntityCreeper){
+							((EntityCreeper)m).setPowered(true);
+						}
+						
+						m.setHealth((int) Math.floor(m.getHealth()/4));
+						m.teleport(e.getFrom());
+						
+						Vector v = m.getLocation().getDirection();
+						v.multiply(-3).add(new Vector(0,0.5,0));
+						m.setVelocity(v);
+					}
+				}
+			}
+		}
+	}
+	
 }

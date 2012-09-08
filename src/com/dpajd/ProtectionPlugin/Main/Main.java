@@ -1,5 +1,6 @@
 package com.dpajd.ProtectionPlugin.Main;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.dpajd.ProtectionPlugin.Commands.*;
+import com.dpajd.ProtectionPlugin.CustomEntities.*;
 import com.dpajd.ProtectionPlugin.Protections.*;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 import com.dpajd.ProtectionPlugin.Regions.ChunkData;
@@ -142,6 +144,8 @@ public class Main extends JavaPlugin{
 		settings = new BPConfig(this);
 		
 		regions = Region.loadRegions();
+
+		pm.registerEvents(new EntityReplaceListener	(this), this);
 		
 		pm.registerEvents(new ElectricFence		(this), this);
 		pm.registerEvents(new NoBuild			(this), this);
@@ -174,6 +178,34 @@ public class Main extends JavaPlugin{
 		getCommand("bphelp").setExecutor(		new BPCommandHelp		(this));
 		getCommand("bpflags").setExecutor(		new BPCommandFlags		(this));
 		getCommand("bp").setExecutor(			new BPCommandBP			(this));
+		
+		try{
+			@SuppressWarnings("rawtypes")
+			Class[] args = new Class[3];
+			args[0] = Class.class;
+			args[1] = String.class;
+			args[2] = int.class;
+			
+			Method a = net.minecraft.server.EntityTypes.class.getDeclaredMethod("a", args);
+			a.setAccessible(true);
+			a.invoke(a, BPZombie.class, "Zombie", 54);
+			a.invoke(a, BPCreeper.class, "Creeper", 50);
+			a.invoke(a, BPBlaze.class, "Blaze", 61);
+			a.invoke(a, BPEnderman.class, "Enderman", 58);
+			a.invoke(a, BPGiant.class, "Giant", 53);
+			a.invoke(a, BPSilverfish.class, "Silverfish", 60);
+			a.invoke(a, BPSkeleton.class, "Skeleton", 51);
+			a.invoke(a, BPSpider.class, "Spider", 52);
+			a.invoke(a, BPCaveSpider.class, "CaveSpider", 59);
+			a.invoke(a, BPPigZombie.class, "PigZombie", 57);
+			a.invoke(a, BPGhast.class, "Ghast", 56);
+			a.invoke(a, BPSlime.class, "Slime", 55);
+			a.invoke(a, BPMagmaCube.class, "LavaSlime", 62);
+			
+		}catch (Exception e){
+			e.printStackTrace();
+			this.setEnabled(false);
+		}
 		
 	}
 	
