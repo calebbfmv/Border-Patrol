@@ -17,8 +17,6 @@ public abstract class Protection implements Listener{
 		LAVA_FLOW,
 		PISTON,
 		BUILD,
-		@Deprecated
-		INTERACT,
 		CHEST_ACCESS,
 		USE,
 		MONSTER_SPAWNING, 
