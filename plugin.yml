@@ -79,7 +79,7 @@ commands:
     bpsee:
         aliases: []
         description: See if chunk is protected
-        permission: BP.command.see
+        permission: BP.command.use
         permission-message: You require <permission> to use this command!
         usage: |
                 /<command>

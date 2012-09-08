@@ -33,6 +33,10 @@ public class BPPerms {
 		return p.hasPermission("BP.command.bypass");
 	}
 	
+	public static boolean canSee(Player p, Region r){
+		return (canUse(p) || r.hasAccess(p));
+	}
+	
 	public static boolean isAdmin(Player p){
 		return p.hasPermission("BP.admin");
 	}
