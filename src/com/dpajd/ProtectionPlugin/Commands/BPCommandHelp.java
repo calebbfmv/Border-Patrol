@@ -23,6 +23,7 @@ public class BPCommandHelp extends BPCommand{
 						"bp: "+ChatColor.GRAY+"Returns the running Border Patrol version",
 						"bphelp: "+ChatColor.GRAY+"Gives a command listing of Border Patrol",
 						"bpcreate: "+ChatColor.GRAY+"Creates a region protection",
+						"bpflags: "+ChatColor.GRAY+"Lists all flags available to you.",
 						"bpaddflag: "+ChatColor.GRAY+"Adds a protection flag to a region",
 						"bpremoveflag: "+ChatColor.GRAY+"Removes a protection flag from a region",
 						"bpbypass: "+ChatColor.GRAY+"Bypasses region protection",
@@ -51,6 +52,11 @@ public class BPCommandHelp extends BPCommand{
 							"/bpcreate: "+ChatColor.GRAY+"Creates a region protection",
 							"Syntax: "+ChatColor.GRAY+"/bpcreate",
 							"        "+ChatColor.GRAY+"/bpcreate [size] [-f] [-p <protection>]"
+					});
+				}else if (args[0].equalsIgnoreCase("bpflags")){
+					plugin.sendMessage(player, new String[]{
+							"/bpflags: "+ChatColor.GRAY+"Lists all flags available to you.",
+							"Syntax: "+ChatColor.GRAY+"/bpflags",
 					});
 				}else if (args[0].equalsIgnoreCase("bpaddflag")){
 					plugin.sendMessage(player, new String[]{
