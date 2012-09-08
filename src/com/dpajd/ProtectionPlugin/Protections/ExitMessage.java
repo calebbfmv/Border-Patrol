@@ -26,12 +26,14 @@ public class ExitMessage extends Protection implements Message{
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e){
 		if (plugin.getSettings().hasProtection(this.getType())){
-			if (plugin.isProtected(e.getTo().getChunk())){
+			if (plugin.isProtected(e.getFrom().getChunk())){
 				Region rTo = plugin.getRegion(e.getTo().getChunk());
 				Region rFrom = plugin.getRegion(e.getFrom().getChunk());
-				if (!rTo.equals(rFrom)){
-					if (rFrom.hasProtection(this.getType())){
-						plugin.sendMessage(e.getPlayer(), rFrom.getMessages().getMessage(this.getMessageType()));
+				if (!(rTo == rFrom)){
+					if (rFrom != null){
+						if (rFrom.hasProtection(this.getType())){
+							plugin.sendMessage(e.getPlayer(), rFrom.getMessages().getMessage(this.getMessageType()));
+						}
 					}
 				}
 			}

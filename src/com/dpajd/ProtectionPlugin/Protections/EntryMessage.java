@@ -28,9 +28,11 @@ public class EntryMessage extends Protection implements Message{
 			if (plugin.isProtected(e.getTo().getChunk())){
 				Region rTo = plugin.getRegion(e.getTo().getChunk());
 				Region rFrom = plugin.getRegion(e.getFrom().getChunk());
-				if (!rTo.equals(rFrom)){
-					if (rTo.hasProtection(this.getType())){
-						plugin.sendMessage(e.getPlayer(), rTo.getMessages().getMessage(this.getMessageType()));
+				if (!(rTo == rFrom)){
+					if (rTo != null){
+						if (rTo.hasProtection(this.getType())){
+							plugin.sendMessage(e.getPlayer(), rTo.getMessages().getMessage(this.getMessageType()));
+						}
 					}
 				}
 			}
