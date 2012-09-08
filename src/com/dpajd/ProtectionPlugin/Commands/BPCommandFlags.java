@@ -37,9 +37,9 @@ public class BPCommandFlags extends BPCommand{
 				});
 			}else if (args.length > 0){
 				if (args[0].equalsIgnoreCase("ELECTRIC")){
-					plugin.sendMessage(player, "ELECTRIC: "+ChatColor.GRAY+"Prevents non-members access and shocks them.");
+					plugin.sendMessage(player, "ELECTRIC: "+ChatColor.GRAY+"Prevents non-members and hostile mobs access and shocks them.");
 				}else if (args[0].equalsIgnoreCase("ENTRY")){
-					plugin.sendMessage(player, "ENTRY: "+ChatColor.GRAY+"Prevents non-members access.");
+					plugin.sendMessage(player, "ENTRY: "+ChatColor.GRAY+"Prevents non-members and hostile mobs access.");
 				}else if (args[0].equalsIgnoreCase("FIRE")){
 					plugin.sendMessage(player, "FIRE: "+ChatColor.GRAY+"Prevents block burning and spread of fire.");
 				}else if (args[0].equalsIgnoreCase("ENDERMAN")){

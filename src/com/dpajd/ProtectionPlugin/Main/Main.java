@@ -252,6 +252,9 @@ public class Main extends JavaPlugin{
 		log.info(ChatColor.GOLD + "You have now disabled " + pdf.getName()
 				+ " Version " + pdf.getVersion() + " Made by "
 				+ pdf.getAuthors());
+		for (Region r : this.regions){
+			r.saveRegion();
+		}
 	}
 	
 }
