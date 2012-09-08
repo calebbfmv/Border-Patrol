@@ -1,5 +1,7 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -41,7 +43,7 @@ public class NoBuild extends Protection{
 				if (r != null){
 					if (!r.hasAccess(e.getPlayer().getName()) && r.hasProtection(this.getType())){
 						e.setCancelled(true);
-						e.getBlock().getState().update(true);
+						e.getPlayer().sendBlockChange(e.getBlock().getRelative(BlockFace.UP).getLocation(), Material.AIR, (byte) 0);
 					}
 				}
 			}	
