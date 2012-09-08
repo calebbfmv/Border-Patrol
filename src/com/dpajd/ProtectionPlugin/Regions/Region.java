@@ -14,9 +14,9 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
+import com.dpajd.ProtectionPlugin.Regions.RegionMessages.RegionMessageType;
 
 public class Region {
 	private static Main plugin = (Main) Bukkit.getPluginManager().getPlugin("Border Patrol");
@@ -28,6 +28,7 @@ public class Region {
 	private ArrayList<Member> members = new ArrayList<Member>();
 	private Owner owner = null;
 	private Location[] bounds = new Location[2];
+	private RegionMessages messages = new RegionMessages(this);
 	
 	public Region(Player player, int width, Chunk chunk, ArrayList<ProtectionType> protections){
 		// Constructor for new Region
@@ -39,6 +40,7 @@ public class Region {
 		this.protections.addAll(protections);
 		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  owner.getName() +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
+		loadMessages();
 	}
 	
 	public Region(String name, Owner owner, Location[] bounds, ArrayList<Member> members, ArrayList<ProtectionType> protections){
@@ -52,6 +54,7 @@ public class Region {
 		this.protections = protections;
 		this.regionFile = new File(plugin.getDataFolder().getPath() + File.separator + "regions" + File.separator +  owner.getName() +".yml");
 		this.regionYaml = YamlConfiguration.loadConfiguration(regionFile);
+		loadMessages();
 	}
 
 	private String generateName(){
@@ -60,6 +63,22 @@ public class Region {
 	
 	public Date getDateCreated(){
 		return new Date(Long.parseLong(name, 16));
+	}
+	
+	private void loadMessages(){
+		for (RegionMessageType msgType : RegionMessageType.values()){
+			if (regionYaml.contains(name + msgType)){
+				messages.setMessage(msgType, regionYaml.getString(name + msgType));
+			}
+		}
+	}
+	
+	private void saveMessages(){
+		for (RegionMessageType msgType : RegionMessageType.values()){
+			if (messages.getMessage(msgType) != null){
+				regionYaml.set(name + msgType, messages.getAltMessage(msgType));
+			}
+		}
 	}
 	
 	public static ArrayList<ChunkData> getChunks(Location[] bounds){ // from offline
@@ -246,10 +265,13 @@ public class Region {
 		}
 	}
 	
+	public RegionMessages getMessages(){
+		return messages;
+	}
+	
+	
 	public void reloadRegion(){
-		
-		String name = regionYaml.getKeys(false).toArray(new String[regionYaml.getKeys(false).size()])[0];
-		
+				
 		String world = regionYaml.getString(name + ".World");
 		
 		int x1 = regionYaml.getInt(name + ".Bounds.Location1.X");
@@ -270,11 +292,11 @@ public class Region {
 			protections.add(ProtectionType.getTypeFromName(protectionName));
 		}
 		
-		this.name = name;
 		this.world = world;
 		this.bounds = bounds;
 		this.members = members;
 		this.protections = protections;
+		
 	}
 	
 	public void saveRegion(){
@@ -297,6 +319,8 @@ public class Region {
 			protectionList.add(type.name());
 		}
 		regionYaml.set(name + ".Protections", protectionList.toArray(new String[protectionList.size()]));
+		
+		saveMessages();
 		
 		try {
 			regionYaml.save(regionFile);
@@ -343,8 +367,10 @@ public class Region {
 						for (String protectionName : regionYaml.getStringList(name + ".Protections")){
 							protections.add(ProtectionType.getTypeFromName(protectionName));
 						}
+						Region r = new Region(name, owner, bounds, members, protections);
+						r.loadMessages();
 						
-						regions.add(new Region(name, owner, bounds, members, protections));
+						regions.add(r);
 					}
 				}
 

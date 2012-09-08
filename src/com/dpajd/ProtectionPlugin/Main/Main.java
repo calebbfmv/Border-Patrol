@@ -158,6 +158,8 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new NoVehicles		(this), this);
 		pm.registerEvents(new NoChestAccess		(this), this);
 		pm.registerEvents(new NoUse				(this), this);
+		pm.registerEvents(new EntryMessage		(this), this);
+		pm.registerEvents(new ExitMessage		(this), this);
 		
 		getCommand("bpbypass").setExecutor(		new BPCommandBypass		(this));
 		getCommand("bpcount").setExecutor(		new BPCommandCount		(this));

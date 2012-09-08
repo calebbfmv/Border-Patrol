@@ -1,5 +1,8 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.bukkit.event.Listener;
 import com.dpajd.ProtectionPlugin.Main.Main;
 
@@ -23,6 +26,8 @@ public abstract class Protection implements Listener{
 		PVP,
 		MOB_DAMAGE,
 		VEHICLES,
+		WELCOME,
+		FAREWELL,
 		/*GHAST,ENDER_DRAGON,WITHER*/;
 		
 		public static ProtectionType getTypeFromName(String name){
@@ -30,6 +35,10 @@ public abstract class Protection implements Listener{
 				if (p.name().equalsIgnoreCase(name)) return p;
 			}
 			return null;
+		}
+		
+		public boolean isMessageFlag(){
+			return new ArrayList<ProtectionType>(Arrays.asList(ProtectionType.WELCOME,ProtectionType.FAREWELL)).contains(this);
 		}
 	}
 	

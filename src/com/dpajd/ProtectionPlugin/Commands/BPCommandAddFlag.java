@@ -1,14 +1,17 @@
 package com.dpajd.ProtectionPlugin.Commands;
 
+import java.util.Arrays;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.dpajd.ProtectionPlugin.Main.BPPerms;
 import com.dpajd.ProtectionPlugin.Main.Main;
 import com.dpajd.ProtectionPlugin.Main.Main.MsgType;
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
 import com.dpajd.ProtectionPlugin.Regions.Region;
+import com.dpajd.ProtectionPlugin.Regions.RegionMessages.RegionMessageType;
 
 public class BPCommandAddFlag extends BPCommand{
 
@@ -27,9 +30,20 @@ public class BPCommandAddFlag extends BPCommand{
 						ProtectionType type = ProtectionType.getTypeFromName(args[0]);
 						if (type != null){
 							if (BPPerms.hasFlag(player, type)){
-								r.addProtection(type);
-								r.saveRegion();
-								plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+								if (type.isMessageFlag()){
+									if (args.length > 1){
+										String message = StringUtils.join(Arrays.copyOfRange(args, 1, args.length-1), " ");
+										RegionMessageType msgType = RegionMessageType.getType(type);
+										r.getMessages().setMessage(msgType, message);
+										plugin.sendMessage(player, "Added " + type.name() + " protection to the region with the message '"+ChatColor.GRAY+message+ChatColor.GOLD+"'.");
+									}else{
+										plugin.sendMessage(player, MsgType.DENIED, "You must provide a message!");
+									}
+								}else{
+									r.addProtection(type);
+									r.saveRegion();
+									plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+								}
 							}else{
 								plugin.sendMessage(player, MsgType.DENIED, "You do not have permission to add that protection type!");
 							}

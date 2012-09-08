@@ -64,6 +64,12 @@ public class BPCommandFlags extends BPCommand{
 					plugin.sendMessage(player, "CHEST_ACCESS: "+ChatColor.GRAY+"Prevent access to chests, furnaces, etc in region.");
 				}else if (args[0].equalsIgnoreCase("USE")){
 					plugin.sendMessage(player, "USE: "+ChatColor.GRAY+"Prevent use of buttons, switches, doors, trapdoors, gates, noteblock, jukebox, and bed.");
+				}else if (args[0].equalsIgnoreCase("WELCOME")){
+					plugin.sendMessage(player, new String[]{"WELCOME: "+ChatColor.GRAY+"Sets the welcome message to the region.",
+															"Syntax: "+ChatColor.GRAY+"/bpaddflag welcome <message>"});
+				}else if (args[0].equalsIgnoreCase("FAREWELL")){
+					plugin.sendMessage(player, new String[]{"FAREWELL: "+ChatColor.GRAY+"Sets the farewell message to the region.",
+															"Syntax: "+ChatColor.GRAY+"/bpaddflag farewell <message>"});
 				}else{
 					plugin.sendMessage(player, MsgType.ERROR, "Protection Flag not recognized!");
 				}
