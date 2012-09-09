@@ -34,7 +34,8 @@ public class Main extends JavaPlugin{
 	public enum MsgType{
 		NORMAL(ChatColor.RED + "[BorderPatrol] " + ChatColor.GOLD),
 		DENIED(ChatColor.RED + "[BorderPatrol] " + ChatColor.RED),
-		ERROR(ChatColor.RED + "[BorderPatrol] " + ChatColor.BOLD);
+		ERROR(ChatColor.RED + "[BorderPatrol] " + ChatColor.BOLD),
+		LOG("[BorderPatrol] ");
 		
 		private String prefix;
 		@SuppressWarnings("serial")
@@ -107,7 +108,16 @@ public class Main extends JavaPlugin{
 	}
 	
 	public void reloadRegions(){
+		log.info(MsgType.LOG + "Reloading regions.");
+		saveRegions();
 		regions = Region.loadRegions();
+	}
+	
+	public void saveRegions(){
+		log.info(MsgType.LOG + "Saving " + regions.size() + " regions.");
+		for (Region r : regions){
+			r.saveRegion();
+		}
 	}
 	
 	public void setRegions(ArrayList<Region> regions){
@@ -123,7 +133,6 @@ public class Main extends JavaPlugin{
 	}
 	
 	public void deleteRegion(Region region){
-		
 		removeRegion(region);
 		region.deleteRegion();
 	}
@@ -143,11 +152,12 @@ public class Main extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		pdf = this.getDescription();
-		log.info("You have now enabled " + pdf.getName() + " Version "
+		log.info(MsgType.LOG + "You have now enabled " + pdf.getName() + " Version "
 				+ pdf.getVersion() + " Made by " + pdf.getAuthors());
 		PluginManager pm = getServer().getPluginManager();
 		settings = new BPConfig(this);
 		regions = Region.loadRegions();
+		log.info(MsgType.LOG + "Loaded " + regions.size() + " regions.");
 		
 		if (settings.getEntitiesEnabled()) pm.registerEvents(new EntityReplaceListener	(this), this);
 		
@@ -253,12 +263,10 @@ public class Main extends JavaPlugin{
 
 	@Override
 	public void onDisable() {
-		log.info(ChatColor.GOLD + "You have now disabled " + pdf.getName()
+		log.info(MsgType.LOG + "You have now disabled " + pdf.getName()
 				+ " Version " + pdf.getVersion() + " Made by "
 				+ pdf.getAuthors());
-		for (Region r : this.regions){
-			r.saveRegion();
-		}
+		saveRegions();
 	}
 	
 }

@@ -42,6 +42,10 @@ public class ChunkData {
 		return getWorld().getChunkAt(chunkX, chunkZ);
 	}
 	
+	public String toString(){
+		return "["+chunkX+","+chunkZ+"]";
+	}
+	
 	public Region getRegion(){
 		Main plugin = (Main) Bukkit.getPluginManager().getPlugin("Border Patrol");
 		for (Region r : plugin.getRegions()){

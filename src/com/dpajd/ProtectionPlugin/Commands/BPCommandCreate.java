@@ -60,6 +60,9 @@ public class BPCommandCreate extends BPCommand{
 										}
 										plugin.addRegion(r);
 										plugin.sendMessage(player, "Created protection id: '" + ChatColor.GRAY + r.getName()+ChatColor.GOLD + "'");
+										plugin.log.info(MsgType.LOG + "Player " + player.getName() + " created a region ("+r.getName()+") on World: " + r.getWorld().getName() +
+												(r.getChunks().size() > 1 ? " totaling "+r.getChunks().size()+" chunks at: " + r.getChunks(): " at: " + r.getChunks())
+												);
 									}else{
 										plugin.sendMessage(player, MsgType.DENIED, "You cannot create a region overlapping another!");
 									}
@@ -84,6 +87,9 @@ public class BPCommandCreate extends BPCommand{
 						r.saveRegion();
 						plugin.addRegion(r);
 						plugin.sendMessage(player, "Created protection id: '" + ChatColor.GRAY + r.getName()+ChatColor.GOLD + "'");
+						plugin.log.info(MsgType.LOG + "Player " + player.getName() + " created a region ("+r.getName()+") on World: " + r.getWorld().getName() +
+								(r.getChunks().size() > 1 ? " totaling "+r.getChunks().size()+" chunks at: " + r.getChunks(): " at: " + r.getChunks())
+								);
 					}else{
 						plugin.sendMessage(player, MsgType.DENIED, "You cannot create a region overlapping another!");
 					}

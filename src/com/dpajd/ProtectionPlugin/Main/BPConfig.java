@@ -18,7 +18,7 @@ public class BPConfig {
 	
 	public BPConfig(Main plugin){
 		this.plugin = plugin;
-		loadConfig();
+		loadConfig(true);
 	}
 	
 	private void defaultConfig(){
@@ -27,20 +27,27 @@ public class BPConfig {
 		for (ProtectionType type : ProtectionType.values()){
 			plugin.getConfig().addDefault("Protections."+type.name(),true);
 		}
-		plugin.getConfig().addDefault("CustomEntityEvents", false);
+		plugin.getConfig().addDefault("CustomEntityEvents", true);
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveConfig();
 	}
 	
-	public void loadConfig(){
-		defaultConfig();
+	/**
+	 * @param defaultConfig Write the defaults to the config
+	 */
+	public void loadConfig(boolean defaultConfig){
+		if (defaultConfig) defaultConfig();
+		loadConfig();
+	}
+	
+	private void loadConfig(){
 		// tool
 		tool = getMat(plugin.getConfig().getString("Wand", Material.GOLD_AXE.name()));	
 		if (tool == null) tool = Material.GOLD_AXE;
 		// sizes
 		sizes = plugin.getConfig().getIntegerList("RegionSizes");
 		// custom entity events
-		customEntities = plugin.getConfig().getBoolean("CustomEntityEvents", false);
+		customEntities = plugin.getConfig().getBoolean("CustomEntityEvents", true);
 		// protections
 		protections = new ArrayList<ProtectionType>();
 		for (String protection : plugin.getConfig().getConfigurationSection("Protections").getKeys(false)){

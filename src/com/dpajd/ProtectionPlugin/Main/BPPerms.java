@@ -1,6 +1,7 @@
 package com.dpajd.ProtectionPlugin.Main;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dpajd.ProtectionPlugin.Protections.Protection.ProtectionType;
@@ -37,8 +38,8 @@ public class BPPerms {
 		return (canUse(p) || r.hasAccess(p));
 	}
 	
-	public static boolean isAdmin(Player p){
-		return p.hasPermission("BP.admin");
+	public static boolean isAdmin(CommandSender sender){
+		return sender.hasPermission("BP.admin");
 	}
 	
 	public static boolean canUse(Player p){
