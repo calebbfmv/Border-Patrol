@@ -22,29 +22,39 @@ public class NoPistonGrief extends Protection{
 		return ProtectionType.PISTON;
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockPistonExtendEvent(BlockPistonExtendEvent e){
 		if (plugin.getSettings().hasProtection(this.getType())){
 			HashSet<Chunk> chunks = new HashSet<Chunk>();
 			for (Block b : e.getBlocks()){
 				chunks.add(b.getChunk());
 			}
-			if (chunks.size() > 1){
-				ArrayList<Chunk> chunkList = new ArrayList<Chunk>(chunks);
-				Region from = plugin.getRegion(chunkList.get(1));
-				Region to = plugin.getRegion(chunkList.get(0));
-				if (from != null && to != null){
+			Region from;
+			Region to;
+			ArrayList<Chunk> chunkList = new ArrayList<Chunk>(chunks);
+			if (chunks.size() >=1){
+				switch (chunks.size()){
+					case 1:
+						from = plugin.getRegion(e.getBlock());
+						to = plugin.getRegion(chunkList.get(0));
+						break;
+					case 2:
+						from = plugin.getRegion(chunkList.get(0));
+						to = plugin.getRegion(chunkList.get(1));
+						break;
+					default: return;
+				}
+				if (from != null && to != null){ // Both are regions
 					if (!to.getOwner().getName().equals(from.getOwner().getName())){
 						if (to.hasProtection(this.getType())) e.setCancelled(true);
 					}
-				}else if(to != null && from == null){
+				}else if(to != null && from == null){ // To is a region, from is empty
 					if (!to.isInside(e.getBlock())){
 						if (to.hasProtection(this.getType())) e.setCancelled(true);
 					}
 				}
 			}
 		}
-		
 	}
 	
 	@EventHandler
