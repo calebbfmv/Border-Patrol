@@ -6,6 +6,8 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -133,6 +135,7 @@ public class EntityReplaceListener implements Listener{
 			case SLIME:
 				if (!(mcEntity instanceof BPSlime)){
 					BPSlime slime = new BPSlime(mcWorld,plugin);
+					slime.setSize(((Slime) entity).getSize());
 					slime.setPosition(location.getX(), location.getY(), location.getZ());
 					
 					mcWorld.removeEntity(mcEntity);
@@ -142,6 +145,7 @@ public class EntityReplaceListener implements Listener{
 			case MAGMA_CUBE:
 				if (!(mcEntity instanceof BPMagmaCube)){
 					BPMagmaCube magmaCube = new BPMagmaCube(mcWorld,plugin);
+					magmaCube.setSize(((MagmaCube)entity).getSize());
 					magmaCube.setPosition(location.getX(), location.getY(), location.getZ());
 					
 					mcWorld.removeEntity(mcEntity);

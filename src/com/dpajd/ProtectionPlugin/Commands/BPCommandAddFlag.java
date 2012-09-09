@@ -42,9 +42,13 @@ public class BPCommandAddFlag extends BPCommand{
 										plugin.sendMessage(player, MsgType.DENIED, "You must provide a message!");
 									}
 								}else{
-									r.addProtection(type);
-									r.saveRegion();
-									plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+									if (!r.hasProtection(type)){
+										r.addProtection(type);
+										r.saveRegion();
+										plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+									}else{
+										plugin.sendMessage(player, MsgType.DENIED, "Protection already exists!");
+									}
 								}
 							}else{
 								plugin.sendMessage(player, MsgType.DENIED, "You do not have permission to add that protection type!");

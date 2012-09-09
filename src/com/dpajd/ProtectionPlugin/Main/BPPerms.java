@@ -22,7 +22,7 @@ public class BPPerms {
 		if (r != null){
 			if(r.getOwner().getName().equals(p.getName()) && p.hasPermission("BP.command.remove.self")){
 				return true;
-			}else if(!r.getOwner().getName().equals(p.getName()) && p.hasPermission("BP.command.remove.others")){
+			}else if(p.hasPermission("BP.command.remove.others")){
 				return true;
 			}else if (isAdmin(p)) return true;
 		}
@@ -39,10 +39,6 @@ public class BPPerms {
 	
 	public static boolean isAdmin(Player p){
 		return p.hasPermission("BP.admin");
-	}
-	
-	public static boolean isDonator(Player p){
-		return p.hasPermission("BP.donator");
 	}
 	
 	public static boolean canUse(Player p){

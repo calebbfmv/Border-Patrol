@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -85,6 +86,10 @@ public class Main extends JavaPlugin{
 		return null;
 	}
 	
+	public Region getRegion(Block block){
+		return getRegion(block.getChunk());
+	}
+	
 	public void addRegion(Region region){
 		regions.add(region);
 	}
@@ -142,7 +147,6 @@ public class Main extends JavaPlugin{
 				+ pdf.getVersion() + " Made by " + pdf.getAuthors());
 		PluginManager pm = getServer().getPluginManager();
 		settings = new BPConfig(this);
-		
 		regions = Region.loadRegions();
 		
 		if (settings.getEntitiesEnabled()) pm.registerEvents(new EntityReplaceListener	(this), this);

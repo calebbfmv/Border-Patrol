@@ -45,8 +45,7 @@ public class BPConfig {
 		protections = new ArrayList<ProtectionType>();
 		for (String protection : plugin.getConfig().getConfigurationSection("Protections").getKeys(false)){
 			if (plugin.getConfig().getBoolean("Protections." + protection)){
-				ProtectionType type = ProtectionType.getTypeFromName(protection);
-				if (type != null) protections.add(type);
+				protections.add(ProtectionType.getTypeFromName(protection));
 			}
 		}
 	}
