@@ -14,6 +14,7 @@ public class BPConfig {
 	private Material tool;
 	private List<Integer> sizes;
 	private ArrayList<ProtectionType> protections;
+	private boolean customEntities;
 	
 	public BPConfig(Main plugin){
 		this.plugin = plugin;
@@ -26,6 +27,7 @@ public class BPConfig {
 		for (ProtectionType type : ProtectionType.values()){
 			plugin.getConfig().addDefault("Protections."+type.name(),true);
 		}
+		plugin.getConfig().addDefault("CustomEntityEvents", false);
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveConfig();
 	}
@@ -37,15 +39,24 @@ public class BPConfig {
 		if (tool == null) tool = Material.GOLD_AXE;
 		// sizes
 		sizes = plugin.getConfig().getIntegerList("RegionSizes");
+		// custom entity events
+		customEntities = plugin.getConfig().getBoolean("CustomEntityEvents", false);
 		// protections
 		protections = new ArrayList<ProtectionType>();
 		for (String protection : plugin.getConfig().getConfigurationSection("Protections").getKeys(false)){
-			protections.add(ProtectionType.getTypeFromName(protection));
+			if (plugin.getConfig().getBoolean("Protections." + protection)){
+				ProtectionType type = ProtectionType.getTypeFromName(protection);
+				if (type != null) protections.add(type);
+			}
 		}
 	}
 	
 	public boolean hasProtection(ProtectionType type){
 		return protections.contains(type);
+	}
+	
+	public boolean getEntitiesEnabled(){
+		return customEntities;
 	}
 	
 	public Material getTool(){

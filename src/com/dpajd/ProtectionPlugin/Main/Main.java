@@ -144,8 +144,8 @@ public class Main extends JavaPlugin{
 		settings = new BPConfig(this);
 		
 		regions = Region.loadRegions();
-
-		pm.registerEvents(new EntityReplaceListener	(this), this);
+		
+		if (settings.getEntitiesEnabled()) pm.registerEvents(new EntityReplaceListener	(this), this);
 		
 		pm.registerEvents(new ElectricFence		(this), this);
 		pm.registerEvents(new NoBuild			(this), this);
