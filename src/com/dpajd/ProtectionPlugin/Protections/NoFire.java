@@ -1,5 +1,6 @@
 package com.dpajd.ProtectionPlugin.Protections;
 
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -48,8 +49,10 @@ public class NoFire extends Protection{
 					Region r = plugin.getRegion(e.getClickedBlock().getChunk());
 					if (r != null){
 						if (r.hasProtection(this.getType())){
-							if (!r.hasAccess(e.getPlayer())){
-								e.setCancelled(true);
+							if (e.getPlayer().getItemInHand().getType() == Material.FLINT_AND_STEEL){
+								if (!r.hasAccess(e.getPlayer())){
+									e.setCancelled(true);
+								}
 							}
 						}
 					}
