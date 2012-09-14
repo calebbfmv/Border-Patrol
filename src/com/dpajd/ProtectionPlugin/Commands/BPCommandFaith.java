@@ -54,4 +54,9 @@ public class BPCommandFaith extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.FAITH;
+	}
+
 }

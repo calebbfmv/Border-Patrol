@@ -55,4 +55,9 @@ public class BPCommandUnFaith extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.UNFAITH;
+	}
+
 }

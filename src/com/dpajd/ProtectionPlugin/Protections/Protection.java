@@ -47,9 +47,5 @@ public abstract class Protection implements Listener{
 	}
 	
 	public abstract ProtectionType getType();
-
-	public Main getPlugin() {
-		return plugin;
-	}
 	
 }

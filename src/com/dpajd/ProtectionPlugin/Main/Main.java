@@ -152,14 +152,19 @@ public class Main extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		pdf = this.getDescription();
-		log.info(MsgType.LOG + "You have now enabled " + pdf.getName() + " Version "
-				+ pdf.getVersion() + " Made by " + pdf.getAuthors());
 		PluginManager pm = getServer().getPluginManager();
 		settings = new BPConfig(this);
-		regions = Region.loadRegions();
-		log.info(MsgType.LOG + "Loaded " + regions.size() + " regions.");
+		//regions = Region.loadRegions();
+		//log.info(MsgType.LOG + "Loaded " + regions.size() + " regions.");
 		
-		if (settings.getEntitiesEnabled()) pm.registerEvents(new EntityReplaceListener	(this), this);
+		//Load the regions on next tick
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+			@Override
+			public void run() {
+				regions = Region.loadRegions();
+				log.info(MsgType.LOG + "Loaded " + regions.size() + " regions.");
+			}
+		});
 		
 		pm.registerEvents(new ElectricFence		(this), this);
 		pm.registerEvents(new NoBuild			(this), this);
@@ -193,33 +198,41 @@ public class Main extends JavaPlugin{
 		getCommand("bpflags").setExecutor(		new BPCommandFlags		(this));
 		getCommand("bp").setExecutor(			new BPCommandBP			(this));
 		
-		try{
-			@SuppressWarnings("rawtypes")
-			Class[] args = new Class[3];
-			args[0] = Class.class;
-			args[1] = String.class;
-			args[2] = int.class;
-			
-			Method a = net.minecraft.server.EntityTypes.class.getDeclaredMethod("a", args);
-			a.setAccessible(true);
-			a.invoke(a, BPZombie.class, "Zombie", 54);
-			a.invoke(a, BPCreeper.class, "Creeper", 50);
-			a.invoke(a, BPBlaze.class, "Blaze", 61);
-			a.invoke(a, BPEnderman.class, "Enderman", 58);
-			a.invoke(a, BPGiant.class, "Giant", 53);
-			a.invoke(a, BPSilverfish.class, "Silverfish", 60);
-			a.invoke(a, BPSkeleton.class, "Skeleton", 51);
-			a.invoke(a, BPSpider.class, "Spider", 52);
-			a.invoke(a, BPCaveSpider.class, "CaveSpider", 59);
-			a.invoke(a, BPPigZombie.class, "PigZombie", 57);
-			a.invoke(a, BPGhast.class, "Ghast", 56);
-			a.invoke(a, BPSlime.class, "Slime", 55);
-			a.invoke(a, BPMagmaCube.class, "LavaSlime", 62);
-			
-		}catch (Exception e){
-			e.printStackTrace();
-			this.setEnabled(false);
+		if (settings.getEntitiesEnabled()){		
+			boolean load = true;
+			try{
+				log.info(MsgType.LOG + "Loading custom entities...");
+				
+				@SuppressWarnings("rawtypes")
+				Class[] args = new Class[]{Class.class, String.class, int.class};
+				
+				Method a = net.minecraft.server.EntityTypes.class.getDeclaredMethod("a", args);
+				a.setAccessible(true);
+				a.invoke(a, BPZombie.class, "Zombie", 54);
+				a.invoke(a, BPCreeper.class, "Creeper", 50);
+				a.invoke(a, BPBlaze.class, "Blaze", 61);
+				a.invoke(a, BPEnderman.class, "Enderman", 58);
+				a.invoke(a, BPGiant.class, "Giant", 53);
+				a.invoke(a, BPSilverfish.class, "Silverfish", 60);
+				a.invoke(a, BPSkeleton.class, "Skeleton", 51);
+				a.invoke(a, BPSpider.class, "Spider", 52);
+				a.invoke(a, BPCaveSpider.class, "CaveSpider", 59);
+				a.invoke(a, BPPigZombie.class, "PigZombie", 57);
+				a.invoke(a, BPGhast.class, "Ghast", 56);
+				a.invoke(a, BPSlime.class, "Slime", 55);
+				a.invoke(a, BPMagmaCube.class, "LavaSlime", 62);
+							
+			}catch (Exception e){
+				load = false;
+				e.printStackTrace();
+				log.warning(MsgType.LOG + "Loading custom FAILED... Attempting to run without...");
+			}
+			if (load) pm.registerEvents(new EntityReplaceListener	(this), this);
 		}
+
+		
+		log.info(MsgType.LOG + "You have now enabled " + pdf.getName() + " Version "
+				+ pdf.getVersion() + " Made by " + pdf.getAuthors());
 		
 	}
 	

@@ -78,4 +78,9 @@ public class BPCommandFlags extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.FLAGS;
+	}
+
 }

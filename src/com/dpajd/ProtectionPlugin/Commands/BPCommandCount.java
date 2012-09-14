@@ -39,4 +39,9 @@ public class BPCommandCount extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.COUNT;
+	}
+
 }

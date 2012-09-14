@@ -1,8 +1,9 @@
 name: Border Patrol
 main: com.dpajd.ProtectionPlugin.Main.Main
-version: "0.4b"
+version: "0.4b-dev"
 author: calebbfmv
 authors: [skore87]
+softdepend: [Vault]
 website: http://dev.bukkit.org/server-mods/border-patrol
 description: Border Patrol is a Lightweight, advanced, grief protection, plugin! Allowing users, with the right Permission, to create protected land, and share it with friends!
 commands:

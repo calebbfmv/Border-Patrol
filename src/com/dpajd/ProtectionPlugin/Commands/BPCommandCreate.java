@@ -101,4 +101,9 @@ public class BPCommandCreate extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.CREATE;
+	}
+
 }

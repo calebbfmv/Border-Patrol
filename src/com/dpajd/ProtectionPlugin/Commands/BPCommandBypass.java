@@ -28,4 +28,9 @@ public class BPCommandBypass extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.BYPASS;
+	}
+
 }

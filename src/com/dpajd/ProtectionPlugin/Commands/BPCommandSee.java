@@ -40,4 +40,9 @@ public class BPCommandSee extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.SEE;
+	}
+
 }

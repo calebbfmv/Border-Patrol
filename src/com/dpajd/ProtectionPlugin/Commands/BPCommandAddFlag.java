@@ -34,18 +34,39 @@ public class BPCommandAddFlag extends BPCommand{
 									if (args.length > 1){
 										String message = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
 										RegionMessageType msgType = RegionMessageType.getType(type);
-										r.addProtection(type);
-										r.getMessages().setMessage(msgType, message);
-										r.saveRegion();
-										plugin.sendMessage(player, "Added " + type.name() + " protection to the region with the message '"+ChatColor.GRAY+message+ChatColor.GOLD+"'.");
+										if (econEnabled){
+											if (econ.has(player.getName(), cost()+cost(type))){
+												r.addProtection(type);
+												r.getMessages().setMessage(msgType, message);
+												r.saveRegion();
+												plugin.sendMessage(player, "Added " + type.name() + " protection to the region with the message '"+ChatColor.GRAY+message+ChatColor.GOLD+"'.");
+											}else{
+												plugin.sendMessage(player, MsgType.DENIED, new String[]{"Not enough funds!","This command costs: "+econ.format(cost()),"This protection costs: "+econ.format(cost(type))});
+											}
+										}else{
+											r.addProtection(type);
+											r.getMessages().setMessage(msgType, message);
+											r.saveRegion();
+											plugin.sendMessage(player, "Added " + type.name() + " protection to the region with the message '"+ChatColor.GRAY+message+ChatColor.GOLD+"'.");
+										}
 									}else{
 										plugin.sendMessage(player, MsgType.DENIED, "You must provide a message!");
 									}
 								}else{
 									if (!r.hasProtection(type)){
-										r.addProtection(type);
-										r.saveRegion();
-										plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+										if (econEnabled){
+											if (econ.has(player.getName(), cost()+cost(type))){
+												r.addProtection(type);
+												r.saveRegion();
+												plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+											}else{
+												plugin.sendMessage(player, MsgType.DENIED, new String[]{"Not enough funds!","This command costs: "+econ.format(cost()),"This protection costs: "+econ.format(cost(type))});
+											}
+										}else{
+											r.addProtection(type);
+											r.saveRegion();
+											plugin.sendMessage(player, "Added " + type.name() + " protection to the region.");
+										}
 									}else{
 										plugin.sendMessage(player, MsgType.DENIED, "Protection already exists!");
 									}
@@ -65,6 +86,11 @@ public class BPCommandAddFlag extends BPCommand{
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public CommandType getType() {
+		return CommandType.ADDFLAG;
 	}
 
 }

@@ -42,4 +42,9 @@ public class BPCommandBP extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return null;
+	}
+
 }

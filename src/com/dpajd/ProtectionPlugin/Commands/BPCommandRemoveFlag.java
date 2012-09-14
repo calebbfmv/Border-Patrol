@@ -41,4 +41,9 @@ public class BPCommandRemoveFlag extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.REMOVEFLAG;
+	}
+
 }

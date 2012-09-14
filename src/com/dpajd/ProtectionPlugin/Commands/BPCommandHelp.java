@@ -105,4 +105,9 @@ public class BPCommandHelp extends BPCommand{
 		return true;
 	}
 
+	@Override
+	public CommandType getType() {
+		return CommandType.HELP;
+	}
+
 }
